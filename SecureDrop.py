@@ -8,15 +8,12 @@ import python.functions.file_functions as SDFile
 import python.functions.commands as CMD
 from python.functions.file_functions import get_file
 
-# This is where the program actually begins technically.
-
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     exit()
 signal.signal(signal.SIGINT, stop_code) 
 
 # main code
 filedir = get_file()
-
 if (not os.path.exists(filedir)):                                  # if client file doesn't exist, ask to register, then register if they want to, else exit
     print("No users are registered with this client.")             # --------------- ISSUE: If there is an empty json file by the same name it will cause an error in the code. ---------------
     yn = input("Do you want to register a new user (y/n)? ")
