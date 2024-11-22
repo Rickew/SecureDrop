@@ -26,8 +26,7 @@ None yet :D
 - pycrptodome
 
 ### How to install on linux
-1) Make sure latest python version is installed
-
+1) Make sure latest python version is installed<br>
 `#python comment`
 
 2) install pycryptodome library
