@@ -45,8 +45,7 @@ None yet :D
 2) install pycryptodome library<br>
     `pip install pycryptodome`
 3) download the [linux release](https://github.com/Rickew/SecureDrop/releases)
-4) 
-4) add execute permissions to the main file
+4) Move the something into the bin
 
 
 ### Ryan's comment
