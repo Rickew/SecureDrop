@@ -16,8 +16,6 @@ signal.signal(signal.SIGINT, stop_code)
 
 # main code
 filedir = get_file()
-print(filedir)
-exit()
 
 if (not os.path.exists(filedir)):                                  # if client file doesn't exist, ask to register, then register if they want to, else exit
     print("No users are registered with this client.")             # --------------- ISSUE: If there is an empty json file by the same name it will cause an error in the code. ---------------

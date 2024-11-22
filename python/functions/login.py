@@ -1,7 +1,7 @@
 from getpass import getpass
 from Crypto.Hash import SHA256
-from classes.user import User
-from file_functions import get_file
+from python.classes.user import User
+from python.functions.file_functions import get_file
 import json
 
 

@@ -1,4 +1,4 @@
-from contact import Contact
+from python.classes.contact import Contact
 from Crypto.Cipher import AES
 
 class User:

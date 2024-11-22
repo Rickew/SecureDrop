@@ -1,10 +1,11 @@
 import os
-from classes.user import User
+from python.classes.user import User
 import json
 
 def get_file() -> str:
     filedir = os.path.dirname(__file__) # gets the directory of the program
-    filedir += "\\usersfile.json" # sets the json file dir to the same dir as the program. To be used later.
+    filedir = filedir.replace("python\\functions","")
+    filedir += "users\\usersfile.json" # sets the json file dir to the same dir as the program. To be used later.
     return filedir
 
 

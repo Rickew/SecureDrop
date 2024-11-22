@@ -1,4 +1,4 @@
-from login import password_input
+from python.functions.login import password_input
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 import json
