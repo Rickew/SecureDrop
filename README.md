@@ -6,15 +6,15 @@ This program is a file transfer service, and uses TCP/UDP and TLS to transfer fi
 ## Using the program
 
 When using the program, on first launch, it will prompt you for a new user to be made, you can then make a new user and it will exit.
-Currently, if you clone this repo there is already a default user.
+When in the environment, you can use the help command to list all the available commands, and what they do.
 
+
+Currently, if you clone this repo there is already a default user.
 ### Default user and pass:
 Email (username): john.doe@gmail.com
 Pass: P4$$word
 
 Upon second launch, it will now prompt you to login.
-
-When in the environment, you can use the help command to list all the available commands, and what they do.
 
 
 ## Security
