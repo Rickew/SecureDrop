@@ -18,18 +18,32 @@ If the userfile is touched in any way that isn't simply changing the data so any
 ## Error handling
 None yet :D
 
-
-
-
-## Requirements
+# Requirements
 - Latest Version of Python.
 - pycrptodome
 
-### How to install on linux
-1) Make sure latest python version is installed<br>
-`#python comment`
+# Installation
+### Windows
+1) Ensure latest version of python is installed.
+    1) Open powershell and type `python3 --version`
+    2) If not installed, or out of date, download the latest version [here](https://www.python.org/downloads/)
+1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
 
-2) install pycryptodome library
+### Linux
+1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
+2) Navigate into SecureDrop directory and run<br>
+`sudo chmod +x install.sh`<br>
+3) Run the install.sh file
+
+### Manual install on linux
+1) Make sure latest python version is installed<br>
+    1) Check python version<br>
+    `python3 --version`
+    2) update python if needed
+    3) if python is not downloaded, download it [here](https://www.python.org/downloads/)
+
+2) install pycryptodome library<br>
+    `pip install pycryptodome`
 3) download the linux release
 4) add execute permissions to the main file
 
