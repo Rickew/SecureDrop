@@ -1,11 +1,16 @@
 import os
 from python.classes.user import User
 import json
+from platform import system
 
 def get_file() -> str:
     filedir = os.path.dirname(__file__) # gets the directory of the program
-    filedir = filedir.replace("python\\functions","")
-    filedir += "users\\usersfile.json" # sets the json file dir to the same dir as the program. To be used later.
+    if (system() == "Linux"):
+        filedir = filedir.replace("python/functions","")
+        filedir += "users/usersfile.json"
+    else:
+        filedir = filedir.replace("python\\functions","")
+        filedir += "users\\usersfile.json" # sets the json file dir to the same dir as the program. To be used later.
     return filedir
 
 
