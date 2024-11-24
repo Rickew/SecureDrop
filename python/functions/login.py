@@ -41,20 +41,25 @@ def login():
     except json.decoder.JSONDecodeError:
         print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
         exit()
+    if (not clientdata):
+        return False, None
     while True:
-        tempname = input("Enter Email Address: ").lower() # for no case sensitivity on email
+        tempemail = input("Enter Email Address: ").lower() # for no case sensitivity on email
         temppass = getpass("Enter Password: ")
-        hs = "a35#Hq34te!@$EF" # ignore me...
 
         # testing entered email and password against known creds
         try:
-            if (SHA256.new((tempname+hs).encode()).hexdigest() == clientdata["email"]
-            and SHA256.new((temppass+hs).encode()).hexdigest() == clientdata["password"]):
-                hs = None # stop snooping in my RAM!!!
-                user = User(clientdata)
-                return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
-            else: 
-                print("Email and Password Combination Invalid.\n") # if wrong tell them to try again
+            clientdata["name"]
+            clientdata["email"]
+            clientdata["password"]
         except KeyError:
             print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
             exit()
+        e = clientdata["email"].split("\x00\x00")
+        p = clientdata["password"].split("\x00\x00")
+        if (SHA256.new((tempemail+e[1]).encode()).hexdigest() == e[0]
+        and SHA256.new((temppass+p[1]).encode()).hexdigest() == p[0]):
+            user = User(clientdata)
+            return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
+        else: 
+            print("Email and Password Combination Invalid.\n") # if wrong tell them to try again

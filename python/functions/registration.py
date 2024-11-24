@@ -7,23 +7,32 @@ from python.functions.login import password_input
 from python.functions.file_functions import get_file
 
 def register_user():
+    while True:
+        print("No users are registered with this client.")             # --------------- ISSUE: If there is an empty json file by the same name it will cause an error in the code. ---------------
+        yn = input("Do you want to register a new user (y/n)? ")
+        if yn.lower() in ['yes', 'y']:
+            break
+        elif yn.lower() in ['no', 'n']:
+            print("Exiting SecureDrop\n")
+            exit()
+    
     name = input("\nEnter Full Name: ")
     email = input("Enter Email Address: ").lower() # for no case sensitivity on email
     password = password_input()
-    hs = "a35#Hq34te!@$EF" # ignore me...
+    es = os.urandom(32).hex()
+    ps = os.urandom(32).hex()
 
     # hashing the password and email
-    hashemail = SHA256.new((email+hs).encode())
-    hashpass = SHA256.new((password+hs).encode())
+    hashemail = SHA256.new((email+es).encode())
+    hashpass = SHA256.new((password+ps).encode())
 
     # first time around is just a quick registration
     aes_obj = AES.new(bytes.fromhex(hashpass.hexdigest()), AES.MODE_GCM)
     enc_name, name_tag = aes_obj.encrypt_and_digest(name.encode())
     namenonce = aes_obj.nonce
     clientdata = {"name": f"{enc_name.hex()}\0\0{name_tag.hex()}\0\0{namenonce.hex()}",
-                    "email":hashemail.hexdigest(),
-                    "password":hashpass.hexdigest()}
-    hs = None # stop snooping in my RAM!!!
+                    "email":f"{hashemail.hexdigest()}\0\0{es}",
+                    "password":f"{hashpass.hexdigest()}\0\0{ps}"}
 
     # Write to the json file, located in the same directory as the program.
     try:

@@ -14,28 +14,12 @@ signal.signal(signal.SIGINT, stop_code)
 
 # main code
 filedir = get_file()
-if (not os.path.exists(filedir)):                                  # if client file doesn't exist, ask to register, then register if they want to, else exit
-    print("No users are registered with this client.")             # --------------- ISSUE: If there is an empty json file by the same name it will cause an error in the code. ---------------
-    yn = input("Do you want to register a new user (y/n)? ")
-    if yn.lower() in ['yes', 'y']:
-        register_user()
-        exit()
-    else:
-        print("Exiting SecureDrop\n")
-        exit()
+if (not os.path.exists(filedir) or os.path.getsize(filedir) == 0): # if client file doesn't exist, ask to register, then register if they want to, else exit
+    register_user()                                                # also checking if file has data, if it is empty prompt for a registration.
 elif (os.path.exists(filedir)): # If client file exists, prompt for client login
-    if (os.path.getsize(filedir) == 0): # checking if file has data, if it is empty prompt for a registration.
-        print("No users are registered with this client.")             # --------------- ISSUE: If there is an empty json file by the same name it will cause an error in the code. ---------------
-        yn = input("Do you want to register a new user (y/n)? ")
-        if yn.lower() in ['yes', 'y']:
-            register_user()
-            exit()
-        else:
-            print("Exiting SecureDrop\n")
-            exit()
     logon = login() # login() returns a tupple of type [Bool, User] to be used for practical security applications.
-    if not logon[0]: # impossible edge case
-        exit()
+    if logon == (0, None):
+        register_user()
 
     # hit them with the motd
     print(f"Welcome to SecureDrop.")     

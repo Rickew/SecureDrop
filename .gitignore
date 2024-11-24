@@ -2,3 +2,8 @@
 build/
 /secure_drop
 /Securedrop.exe
+__pycache__/
+/__pycache__
+*.pyc
+*.pyo
+*.pyd
