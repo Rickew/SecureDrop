@@ -57,7 +57,7 @@ class User:
         enc_name, name_tag = aes_obj.encrypt_and_digest(self.__name.encode())
         namenonce = aes_obj.nonce
         jsonDict = {f"name": f"{enc_name.hex()}\0\0{name_tag.hex()}\0\0{namenonce.hex()}",
-                    "email": self.__email_hash[0]+self.__email_hash[1], "password": self.__pass_hash[0]+self.__pass_hash[1]} # user vals
+                    "email": self.__email_hash[0]+"\0\0"+self.__email_hash[1], "password": self.__pass_hash[0]+"\0\0"+self.__pass_hash[1]} # user vals
         for n in range(len(self.__contacts)):
 
             # encypting contact[n] name
