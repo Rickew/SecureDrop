@@ -1,5 +1,6 @@
-from python.classes.contact import Contact
+from sys import exit
 from Crypto.Cipher import AES
+from python.classes.contact import Contact
 
 class User:
     def __init__(self, name: str, email: str, password: str): # constructor for initial user registration
@@ -9,21 +10,20 @@ class User:
         self.__contacts: list[Contact] = []
 
     def __init__(self, data: dict[str, str]): # constructor used for user importation
-        if ("name" in data.keys() and       # not needed, but slight error checking,
-            "email" in data.keys() and      # its checked again before this at the login().
-            "password" in data.keys()):    
-
+        try:
             # setting normal vars
+            n_end = int(len(data) - 3 / 2) # gets the correct number of contacts in the data
+            if data[f"contact{n_end}"]:
+                None
             self.__email_hash = data["email"]
             self.__pass_hash = data["password"]
             e_name = data[f"name"].split("\x00\x00")
             aes_o = AES.new(bytes.fromhex(self.__pass_hash), AES.MODE_GCM, nonce=bytes.fromhex(e_name[2]))
             self.__name = aes_o.decrypt_and_verify(bytes.fromhex(e_name[0]), bytes.fromhex(e_name[1])).decode()
             self.__contacts: list[Contact] = [] # list to store contacts
-            n_end = int(len(data) - 3 / 2) # gets the correct number of contacts in the data
             for n in range(n_end):
                 if (f"contact{n}" in data.keys()):
-                    
+
                     # spliting the encrypted contact data on the delimeter
                     e_name = data[f"contact{n}"].split("\x00\x00")
                     e_email = data[f"email{n}"].split("\x00\x00")
@@ -38,7 +38,7 @@ class User:
                     self.add_contact(name.decode(), email.decode())
                 else:
                     break # until there are no more left to add
-        else:
+        except ValueError or IndexError or KeyError:
             print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
             exit()
     def name(self):

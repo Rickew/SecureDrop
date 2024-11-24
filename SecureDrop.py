@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-import signal
 import os
-from python.functions.login import login
-from python.classes.user import User
-from python.functions.registration import register_user
-import python.functions.file_functions as SDFile
+import signal
+from sys import exit
 import python.functions.commands as CMD
+from python.functions.login import login
+import python.functions.file_functions as SDFile
 from python.functions.file_functions import get_file
+from python.functions.registration import register_user
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     exit()

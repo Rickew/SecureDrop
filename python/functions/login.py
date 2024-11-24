@@ -1,8 +1,9 @@
+import json
+from sys import exit
 from getpass import getpass
 from Crypto.Hash import SHA256
 from python.classes.user import User
 from python.functions.file_functions import get_file
-import json
 
 
 
@@ -28,15 +29,16 @@ def password_checker(pass1, pass2):                         # password complexit
     return False
 
 def login():
-    userfile = open(get_file(), "r")
-    tmp = userfile.read()
-    if(type(tmp) == str and tmp[0] != "{"): # if the json file isn't empty but is not a dict type, exit() (error checking)
-        print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
-        exit()
-    userfile.close()
-    userfile = open(get_file(), "r")
-    clientdata: dict[str, str] = json.load(userfile)
-    if (not "email" in clientdata.keys() or not "password" in clientdata.keys()): # error checking... for security reasons trust.
+    # userfile = open(get_file(), "r")
+    # tmp = userfile.read()
+    # if(type(tmp) == str and tmp[0] != "{"): # if the json file isn't empty but is not a dict type, exit() (error checking)
+    #     userfile.close()
+    #     print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
+    #     exit()
+    try:
+        userfile = open(get_file(), "r")
+        clientdata: dict[str, str] = json.load(userfile)
+    except json.decoder.JSONDecodeError:
         print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
         exit()
     while True:
@@ -45,10 +47,14 @@ def login():
         hs = "a35#Hq34te!@$EF" # ignore me...
 
         # testing entered email and password against known creds
-        if (SHA256.new((tempname+hs).encode()).hexdigest() == clientdata["email"]
-        and SHA256.new((temppass+hs).encode()).hexdigest() == clientdata["password"]):
-            hs = None # stop snooping in my RAM!!!
-            user = User(clientdata)
-            return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
-        else: 
-            print("Email and Password Combination Invalid.\n") # if wrong tell them to try again
+        try:
+            if (SHA256.new((tempname+hs).encode()).hexdigest() == clientdata["email"]
+            and SHA256.new((temppass+hs).encode()).hexdigest() == clientdata["password"]):
+                hs = None # stop snooping in my RAM!!!
+                user = User(clientdata)
+                return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
+            else: 
+                print("Email and Password Combination Invalid.\n") # if wrong tell them to try again
+        except KeyError:
+            print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
+            exit()
