@@ -19,9 +19,12 @@ If the userfile is touched in any way that isn't simply changing the data so any
 Feel free to prove me wrong, however after going over the entire code, I found all the exceptions I needed to catch NOMRALLY. They all involve the json file decoding, and AES decrpytion.<br>
 When caught they inform the user that the usersfile.json has been tampered with and exits the program.
 
+
 # Requirements
 - Latest Version of Python.
 - pycrptodome
+- Compiling requires pyinstaller
+
 
 # Installation
 ### Windows
@@ -49,5 +52,21 @@ When caught they inform the user that the usersfile.json has been tampered with 
 4) Move the something into the bin
 
 
+# Other Documentation
+## This project is technically open source!
+This program was made by CS students who don't have years experience in coding.<br>
+So, feel free to mess with it, break it, do whatever you want to it. Fix problems, create problems, optimize our code, the sky is the limit.<br>
+All the source code is done in python, and everything, even the releases folder where all the binaries are all in the repo.
+
+## Compiling
+I (Rickew) have provided 2 compiling scripts that simply run the compiling command which compiles the new release and then move the executable into the main directory for ease of access.<br><bR>
+The compile command is very simple, and the only difference between windows and linux is the paths for the releases.
+`pyinstaller ./Securedrop.py --distpath ./releases/windows --onefile`<br><br>
+The script extensions are for powershell (windows) and any terminal that can run a .sh<br><br>
+The copied executables are ignored in the .gitignore file.
+
+
+
+
 ### Ryan's comment
-PAT IS COOOL and should get a Tandum BIKE!! :}
+RICK IS COOOL and should get a Tandum BIKE!! :}
