@@ -1,4 +1,4 @@
 # requires pyinstaller
 #linux
-pyinstaller ./Securedrop.py --distpath ./releases/linux --onefile
-cp ./releases/linux/Securedrop ./
+pyinstaller ./Securedrop.py --distpath ./releases/linux --name secure_drop --onefile 
+cp ./releases/linux/secure_drop ./

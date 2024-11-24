@@ -19,14 +19,17 @@ If the userfile is touched in any way that isn't simply changing the data so any
 Feel free to prove me wrong, however after going over the entire code, I found all the exceptions I needed to catch NOMRALLY. They all involve the json file decoding, and AES decrpytion.<br>
 When caught they inform the user that the usersfile.json has been tampered with and exits the program.
 
+<br>
 
 # Requirements
+## Python Execution
 - Latest Version of Python.
-- pycrptodome
-- Compiling requires pyinstaller
+- pycrptodome library
 
+<br>
 
 # Installation
+## Normal Python Script Execution
 ### Windows
 1) Ensure latest version of python is installed.
     1) Open powershell and type `python3 --version`
@@ -34,10 +37,13 @@ When caught they inform the user that the usersfile.json has been tampered with 
 1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
 
 ### Linux
-1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
-2) Navigate into SecureDrop directory and run<br>
+1) Ensure latest version of python is installed.
+    1) run `python3 --version`
+    2) If not installed, or out of date, download the latest version [here](https://www.python.org/downloads/)
+2) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
+3) Navigate into SecureDrop directory and run<br>
 `sudo chmod +x install.sh`<br>
-3) Run the install.sh file
+4) Run the install.sh file
 
 ### Manual install on linux
 1) Make sure latest python version is installed<br>
@@ -45,12 +51,24 @@ When caught they inform the user that the usersfile.json has been tampered with 
     `python3 --version`
     2) update python if needed
     3) if python is not downloaded, download it [here](https://www.python.org/downloads/)
-
 2) install pycryptodome library<br>
     `pip install pycryptodome`
 3) download the [linux release](https://github.com/Rickew/SecureDrop/releases)
 4) Move the something into the bin
 
+
+## Release Installation
+### Windows
+1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
+2) Run the program in the terminal. 
+    `./Securedrop.exe`
+
+### Linux
+1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
+2) Run the install.sh with sudo.
+    `sudo ./install.sh`
+
+<br>
 
 # Other Documentation
 ## This project is technically open source!

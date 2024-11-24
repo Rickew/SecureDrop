@@ -10,19 +10,19 @@ def get_file() -> str:
         if var[1] == "Linux":
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
             filedir = filedir.replace("python/functions","")
-            filedir += "/users/usersfile.json" # linux path
+            filedir += "/scdusers/usersfile.json" # linux path
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
             filedir = filedir.replace("python\\functions","")
-            filedir += "\\users\\usersfile.json" # windows path
+            filedir += "\\scdusers\\usersfile.json" # windows path
     elif (var[1] == "Linux"):
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python/functions","")
-        filedir += "users/usersfile.json" # linux path
+        filedir += "scdusers/usersfile.json" # linux path
     else:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
-        filedir += "users\\usersfile.json" # windows path
+        filedir += "scdusers\\usersfile.json" # windows path
     return filedir
 
 
