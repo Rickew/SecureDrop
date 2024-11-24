@@ -2,3 +2,5 @@ build
 /SecureDrop.exe
 SecureDrop.spec
 /SecureDrop
+/secure_drop
+secure_drop.spec
