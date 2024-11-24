@@ -16,7 +16,8 @@ If the userfile is touched in any way that isn't simply changing the data so any
 
 
 ## Error handling
-None yet :D
+Feel free to prove me wrong, however after going over the entire code, I found all the exceptions I needed to catch NOMRALLY. They all involve the json file decoding, and AES decrpytion.<br>
+When caught they inform the user that the usersfile.json has been tampered with and exits the program.
 
 # Requirements
 - Latest Version of Python.
