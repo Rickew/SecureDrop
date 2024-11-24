@@ -46,8 +46,24 @@ When caught they inform the user that the usersfile.json has been tampered with 
 
 ### Linux
 1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
-2) Run the install.sh with sudo.
+2) Run 
+    `chmod +x ./install.sh`
+    Run with sudo if needed.
+3) Run the install.sh with sudo.
     `sudo ./install.sh`
+<br><br>
+
+# Uninstallation
+### Windows
+1) Delete the release folder.
+
+### Linux
+1) Run
+    `chmod +x ./uninstall.sh`
+    Run with sudo if needed.
+2) Run the uninstall.sh with sudo.
+    `sudo ./uninstall.sh`
+3) Delete the release folder.
 <br><br>
 
 # Other Documentation
