@@ -7,3 +7,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.zip
+*.tar
+*.7z
