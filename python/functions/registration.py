@@ -1,5 +1,6 @@
 import json
 from sys import exit
+import os
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from python.functions.login import password_input
@@ -25,7 +26,16 @@ def register_user():
     hs = None # stop snooping in my RAM!!!
 
     # Write to the json file, located in the same directory as the program.
-    with open(get_file(), "w") as file:
-        json.dump(clientdata,file, indent=4)
-        print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
-        exit()
+    try:
+        with open(get_file(), "w") as file:
+            json.dump(clientdata,file, indent=4)
+            print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
+            file.close()
+            exit()
+    except FileNotFoundError:
+        os.mkdir("scdusers")
+        with open(get_file(), "w") as file:
+            json.dump(clientdata,file, indent=4)
+            print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
+            file.close()
+            exit()
