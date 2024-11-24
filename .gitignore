@@ -1,6 +1,6 @@
-build
-/SecureDrop.exe
-SecureDrop.spec
-/SecureDrop
+*.spec
+build/
 /secure_drop
-secure_drop.spec
+/Securedrop.exe
+!*/secure_drop
+!*/Securedrop.exe
