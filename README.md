@@ -30,31 +30,12 @@ When caught they inform the user that the usersfile.json has been tampered with 
 
 # Installation
 ## Normal Python Script Execution
-### Windows
+### Windows & linux
 1) Ensure latest version of python is installed.
     1) Open powershell and type `python3 --version`
     2) If not installed, or out of date, download the latest version [here](https://www.python.org/downloads/)
-1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
-
-### Linux
-1) Ensure latest version of python is installed.
-    1) run `python3 --version`
-    2) If not installed, or out of date, download the latest version [here](https://www.python.org/downloads/)
-2) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
-3) Navigate into SecureDrop directory and run<br>
-`sudo chmod +x install.sh`<br>
-4) Run the install.sh file
-
-### Manual install on linux
-1) Make sure latest python version is installed<br>
-    1) Check python version<br>
-    `python3 --version`
-    2) update python if needed
-    3) if python is not downloaded, download it [here](https://www.python.org/downloads/)
-2) install pycryptodome library<br>
-    `pip install pycryptodome`
-3) download the [linux release](https://github.com/Rickew/SecureDrop/releases)
-4) Move the something into the bin
+2) Clone the repository
+    `git clone https://github.com/Rickew/SecureDrop.git`
 
 
 ## Release Installation
@@ -67,8 +48,7 @@ When caught they inform the user that the usersfile.json has been tampered with 
 1) Download the [latest release](https://github.com/Rickew/SecureDrop/releases)
 2) Run the install.sh with sudo.
     `sudo ./install.sh`
-
-<br>
+<br><br>
 
 # Other Documentation
 ## This project is technically open source!
@@ -82,6 +62,9 @@ The compile command is very simple, and the only difference between windows and 
 `pyinstaller ./Securedrop.py --distpath ./releases/windows --onefile`<br><br>
 The script extensions are for powershell (windows) and any terminal that can run a .sh<br><br>
 The copied executables are ignored in the .gitignore file.
+
+## Github Scripts
+The Push & Pull exe's are my own batch scripts turned exe's. They, along with this section of the documentation will be removed after the project is turned in.
 
 
 
