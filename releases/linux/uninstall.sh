@@ -1,2 +1,2 @@
 rm /usr/bin/secure_drop
-rm -r /var/local/scdusers
+rm -r /var/tmp/scdusers
