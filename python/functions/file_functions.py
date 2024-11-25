@@ -2,13 +2,15 @@ import os
 import sys
 import json
 from platform import system
+from getpass import getuser
 from python.classes.user import User
 
 def get_file() -> str:
     var = getattr(sys, "frozen", False), system()
     if var[0]:
         if var[1] == "Linux":
-            filedir = "/home/$USER/.scdusers/usersfile.json" # linux path if it is installed
+            u = getuser()
+            filedir = f"/home/{u}/.scdusers/usersfile.json" # linux path if it is installed
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
             filedir += "\\scdusers\\usersfile.json" # windows path

@@ -14,6 +14,7 @@ signal.signal(signal.SIGINT, stop_code)
 
 # main code
 filedir = get_file()
+print(filedir)
 if (not os.path.exists(filedir) or os.path.getsize(filedir) == 0): # if client file doesn't exist, ask to register, then register if they want to, else exit
     register_user()                                                # also checking if file has data, if it is empty prompt for a registration.
 elif (os.path.exists(filedir)): # If client file exists, prompt for client login
