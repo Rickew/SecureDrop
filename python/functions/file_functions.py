@@ -24,7 +24,6 @@ def get_file() -> str:
         filedir += "scdusers\\usersfile.json" # windows path
     return filedir
 
-
 def write_out(user: User, filedir):     # used to write out the json when exiting the program normally.
     with open(filedir, "w") as file:    # triggered on the commands: exit, add. so the file stays fine and doesn't corrupt
         exp = user.export_user()

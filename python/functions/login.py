@@ -29,12 +29,6 @@ def password_checker(pass1, pass2):                         # password complexit
     return False
 
 def login():
-    # userfile = open(get_file(), "r")
-    # tmp = userfile.read()
-    # if(type(tmp) == str and tmp[0] != "{"): # if the json file isn't empty but is not a dict type, exit() (error checking)
-    #     userfile.close()
-    #     print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
-    #     exit()
     try:
         userfile = open(get_file(), "r")
         clientdata: dict[str, str] = json.load(userfile)
@@ -63,3 +57,4 @@ def login():
             return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
         else: 
             print("Email and Password Combination Invalid.\n") # if wrong tell them to try again
+            
