@@ -1,0 +1,12 @@
+SecureDrop.py - Patrick
+contact.py - Ryan
+	- display() - Patrick
+user.py - Patrick
+	name() - Ryan
+	email() - Ryan
+	password() - Ryan
+commands.py - Ryan
+file_functions - Patrick
+login.py - Patrick
+registration.py - Patrick
+	
