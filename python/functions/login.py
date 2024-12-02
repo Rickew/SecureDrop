@@ -59,7 +59,7 @@ def login():
         p = clientdata["password"].split("\x00\x00")
         if (SHA256.new((tempemail+e[1]).encode()).hexdigest() == e[0]
         and SHA256.new((temppass+p[1]).encode()).hexdigest() == p[0]):
-            user = User(clientdata)
+            user = User(clientdata, SHA256.new((temppass).encode()).hexdigest())
             return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
         else: 
             print("Email and Password Combination Invalid.\n") # if wrong tell them to try again

@@ -2,9 +2,20 @@ from sys import exit
 from Crypto.Cipher import AES
 from python.classes.contact import Contact
 
+def encrypt(input: str, key: str):
+    aes_o = AES.new(bytes.fromhex(key), AES.MODE_GCM)
+    output, tag = aes_o.encrypt_and_digest(input.encode())
+    return output, tag, aes_o.nonce
+
+def decrypt(key: str, input: str, tag: str, nonce:str):
+    aes_o = AES.new(bytes.fromhex(key), AES.MODE_GCM, nonce=bytes.fromhex(nonce))
+    output = aes_o.decrypt_and_verify(bytes.fromhex(input), bytes.fromhex(tag)).decode()
+    return output
+
 class User:
-    def __init__(self, data: dict[str, str]): # constructor used for user importation
+    def __init__(self, data: dict[str, str], aes_key): # constructor used for user importation
         try:
+            self.__aes_key = aes_key
             # setting normal vars
             n_end = int(len(data) - 3 / 2) # gets the correct number of contacts in the data
             try:
@@ -12,11 +23,11 @@ class User:
                     None
             except KeyError:
                 None
+            
             self.__email_hash = data["email"].split("\x00\x00")
             self.__pass_hash = data["password"].split("\x00\x00")
             e_name = data[f"name"].split("\x00\x00")
-            aes_o = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM, nonce=bytes.fromhex(e_name[2]))
-            self.__name = aes_o.decrypt_and_verify(bytes.fromhex(e_name[0]), bytes.fromhex(e_name[1])).decode()
+            self.__name = decrypt(self.__aes_key, e_name[0], e_name[1], e_name[2]) # decrypting the name
             self.__contacts: list[Contact] = [] # list to store contacts
             for n in range(n_end):
                 if (f"contact{n}" in data.keys()):
@@ -26,13 +37,11 @@ class User:
                     e_email = data[f"email{n}"].split("\x00\x00")
 
                     # Decryption
-                    aes_o = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM, nonce=bytes.fromhex(e_name[2]))
-                    name = aes_o.decrypt_and_verify(bytes.fromhex(e_name[0]), bytes.fromhex(e_name[1]))
-                    aes_o = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM, nonce=bytes.fromhex(e_email[2]))
-                    email = aes_o.decrypt_and_verify(bytes.fromhex(e_email[0]), bytes.fromhex(e_email[1]))
+                    name = decrypt(self.__aes_key, e_name[0], e_name[1], e_name[2])
+                    email = decrypt(self.__aes_key, e_email[0], e_email[1], e_email[2])
 
                     # add the contact, rinse and repeat
-                    self.add_contact(name.decode(), email.decode())
+                    self.add_contact(name, email)
                 else:
                     break # until there are no more left to add
         except ValueError or IndexError or KeyError:
@@ -53,24 +62,19 @@ class User:
         self.__contacts.append(Contact(name, email))
 
     def export_user(self): # exports the user + contacts to a json format
-        aes_obj = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM)
-        enc_name, name_tag = aes_obj.encrypt_and_digest(self.__name.encode())
-        namenonce = aes_obj.nonce
-        jsonDict = {f"name": f"{enc_name.hex()}\0\0{name_tag.hex()}\0\0{namenonce.hex()}",
-                    "email": self.__email_hash[0]+"\0\0"+self.__email_hash[1], "password": self.__pass_hash[0]+"\0\0"+self.__pass_hash[1]} # user vals
+        e_email = encrypt(self.__name,self.__aes_key)
+        jsonDict = {"name": f"{e_email[0].hex()}\0\0{e_email[1].hex()}\0\0{e_email[2].hex()}",
+                    "email": f"{self.__email_hash[0]}\0\0{self.__email_hash[1]}",
+                    "password": f"{self.__pass_hash[0]}\0\0{self.__pass_hash[1]}"} # user vals
         for n in range(len(self.__contacts)):
 
             # encypting contact[n] name
-            aes_obj = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM)
-            enc_name, name_tag = aes_obj.encrypt_and_digest(self.__contacts[n].name().encode())
-            namenonce = aes_obj.nonce
+            e_name = encrypt(self.__contacts[n].name(), self.__aes_key)
 
             # encypting contact[n] email
-            aes_obj = AES.new(bytes.fromhex(self.__pass_hash[0]), AES.MODE_GCM)
-            enc_email, email_tag = aes_obj.encrypt_and_digest(self.__contacts[n].email().encode())
-            emailnonce = aes_obj.nonce
+            e_email = encrypt(self.__contacts[n].email(), self.__aes_key)
 
             # adding contact[n] onto the final output dict using sperator \0\0 for the ciphertext|tag|nonce
-            jsonDict.update({f"contact{n}": f"{enc_name.hex()}\0\0{name_tag.hex()}\0\0{namenonce.hex()}",
-            f"email{n}":f"{enc_email.hex()}\0\0{email_tag.hex()}\0\0{emailnonce.hex()}"})
+            jsonDict.update({f"contact{n}": f"{e_name[0].hex()}\0\0{e_name[1].hex()}\0\0{e_name[2].hex()}",
+            f"email{n}":f"{e_email[0].hex()}\0\0{e_email[1].hex()}\0\0{e_email[2].hex()}"})
         return jsonDict

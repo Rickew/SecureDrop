@@ -27,7 +27,7 @@ def register_user():
     hashpass = SHA256.new((password+ps).encode())
 
     # first time around is just a quick registration
-    aes_obj = AES.new(bytes.fromhex(hashpass.hexdigest()), AES.MODE_GCM)
+    aes_obj = AES.new(bytes.fromhex(SHA256.new((password).encode()).hexdigest()), AES.MODE_GCM)
     enc_name, name_tag = aes_obj.encrypt_and_digest(name.encode())
     namenonce = aes_obj.nonce
     clientdata = {"name": f"{enc_name.hex()}\0\0{name_tag.hex()}\0\0{namenonce.hex()}",
