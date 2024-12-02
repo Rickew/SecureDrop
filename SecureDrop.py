@@ -39,4 +39,4 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
                 CMD.list_contacts(logon[1])
             if command.lower() == 'send':
                 CMD.send()
-
+                

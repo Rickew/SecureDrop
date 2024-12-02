@@ -1,0 +1,28 @@
+SecureDrop.py: 
+	Patrick - 31 lines
+
+contact.py:
+	Ryan - 8 lines
+	Patrick - 2 lines
+
+user.py - Patrick
+	Ryan - 6 lines
+	Patrick - 45 lines
+
+commands.py:
+	Ryan - 11 Lines
+	Patrick - 4 lines
+
+file_functions:
+	Patrick - 22 lines
+
+login.py:
+	Patrick - 46 lines
+
+registration.py:
+	Patrick - 31 lines
+
+Total:
+	206 lines
+	Patrick - 177 lines
+	Ryan - 29 lines
