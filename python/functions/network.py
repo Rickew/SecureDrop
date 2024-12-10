@@ -9,7 +9,7 @@ from time import sleep
 def is_online(username):
 
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.setsockopt(socket.SQL_SOCKET, socket.SO_BROADCAST, 1)
+    udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     while True:
         message = f"{username}".encode('utf-8')
         udp_socket.sendto(message, ('0.0.0.0', 9999))
