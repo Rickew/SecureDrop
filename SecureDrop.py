@@ -26,8 +26,6 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print("Type \"help\" For Commands.\n\n")
 
 
-def main():
-    online_contacts = {"example@domain.com", "friend@domain.com"}
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
