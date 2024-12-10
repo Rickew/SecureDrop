@@ -1,6 +1,11 @@
 from sys import exit
 from Crypto.Cipher import AES
 from python.classes.contact import Contact
+from python.functions.network import broadcast_server
+from python.functions.network import broadcast_reciever
+import socket
+from threading import Thread
+import ssl
 
 def encrypt(input: str, key: str):
     aes_o = AES.new(bytes.fromhex(key), AES.MODE_GCM)
@@ -78,3 +83,9 @@ class User:
             jsonDict.update({f"contact{n}": f"{e_name[0].hex()}\0\0{e_name[1].hex()}\0\0{e_name[2].hex()}",
             f"email{n}":f"{e_email[0].hex()}\0\0{e_email[1].hex()}\0\0{e_email[2].hex()}"})
         return jsonDict
+#if command.lower() == 'list':
+#    list_contacts(logon[1], online_contacts)
+online_contacts = set()
+broadcast_port = 9999
+Thread(target=broadcast_server, args=(User.email(), broadcast_port), daemon=True).start()
+Thread(target=broadcast_reciever, args=(broadcast_port, online_contacts), daemon=True).start()

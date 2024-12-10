@@ -13,9 +13,23 @@ def add(user: User):
     user.add_contact(Name, Email)
     print("  Conact Added.")
 
-def list_contacts(user: User):
-    print("  list function yet to be done, but here, have some contacts:")
-    user.printcontacts()
+def list_contacts(user: User, online_contacts: set):
+    displayed = False
+    for contact in user._user__contacts: #Access private contacts list
+        contact_email = contact.email()
+
+        #What we need
+        # 1. Contact's email exists in the user's contact list
+        # 2. Contact has added the user's email
+        # 3. Contact is online in the 'online_contacts' set
+        if(contact_email in online_contacts and any(user.email() == other.email() for other in contact._Contact__contacts)):
+                print(f"* {contact.name()} <{contact.email}>")
+                displayed = True
+    if not displayed:
+         print("Not FRIENDS!!")
+    #print("  list function yet to be done, but here, have some contacts:")
+    #user.printcontacts()
+
 
 def send():
     print("  send function yet to be done")

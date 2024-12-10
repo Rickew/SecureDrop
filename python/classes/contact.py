@@ -11,3 +11,4 @@ class Contact:
     
     def display(self): # displays the contact information
         print(f'  {self.name()} <{self.email()}>')
+        
