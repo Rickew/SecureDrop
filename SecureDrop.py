@@ -25,10 +25,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
 
-def main():
-    online_contacts = {"example@domain.com", "friend@domain.com"}
-    broadcast_port = 9999
-    CMD.start_network_threads(logon[1], online_contacts, broadcast_port)
+
 
 
     while logon[0]: # and then start the while loop                                                
@@ -46,5 +43,3 @@ def main():
             if command.lower() == 'send':
                 CMD.send()
 
-if __name__ == "__main__":
-    main()
