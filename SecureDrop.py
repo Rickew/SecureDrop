@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import os
 import signal
+import threading
 from sys import exit
+import python.functions.network as Network
 import python.functions.commands as CMD
 from python.functions.login import login
 import python.functions.file_functions as SDFile
@@ -25,7 +27,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
 
-
+    threads = [threading.Thread(Network.udp_receiver)]
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
@@ -38,7 +40,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
                 CMD.add(logon[1])
                 SDFile.write_out(logon[1], filedir)
             if command.lower() == 'list':
-                CMD.list_contacts(logon[1], online_contacts)
+                CMD.list_contacts(logon[1])
             if command.lower() == 'send':
                 CMD.send()
 

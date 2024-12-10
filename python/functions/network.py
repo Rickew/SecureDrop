@@ -6,22 +6,21 @@ from threading import Thread
 from time import sleep
 
 
-def broadcast_server(username, port):
+def is_online(username):
 
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_socket.setsockopt(socket.SQL_SOCKET, socket.SO_BROADCAST, 1)
     while True:
         message = f"{username}".encode('utf-8')
-        udp_socket.sendto(message, ('<broadcast>', port))
+        udp_socket.sendto(message, ('0.0.0.0', 9999))
         sleep(5)
 
-def broadcast_reciever(port, online_contacts):
-
+def udp_receiver():
+    hostname = socket.gethostname()
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.bind(('', port))
+    udp_socket.bind((socket.gethostbyname(hostname), 9999))
     while True:
         data, addr = udp_socket.recvfrom(1024)
-        online_contacts.add(data.decode('utf-8'))
 
 #PUT THIS IN MAIN
 #online_contacts = set()
