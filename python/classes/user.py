@@ -85,5 +85,5 @@ class User:
         return jsonDict
 online_contacts = set()
 broadcast_port = 9999
-Thread(target=broadcast_server, args=(uUser.email(), broadcast_port), daemon=True).start()
+Thread(target=broadcast_server, args=(User.email(), broadcast_port), daemon=True).start()
 Thread(target=broadcast_reciever, args=(broadcast_port, online_contacts), daemon=True).start()
