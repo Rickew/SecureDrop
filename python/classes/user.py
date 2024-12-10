@@ -1,6 +1,8 @@
 from sys import exit
 from Crypto.Cipher import AES
 from python.classes.contact import Contact
+from python.functions.network import broadcast_server
+from python.functions.network import broadcast_reciever
 import socket
 from threading import Thread
 import ssl

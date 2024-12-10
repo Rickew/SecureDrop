@@ -1,4 +1,3 @@
-from python.classes.user import User
 from Crypto.Cipher import AES 
 from Crypto.Random import get_random_bytes
 import ssl
