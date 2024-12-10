@@ -1,8 +1,8 @@
 from sys import exit
 from Crypto.Cipher import AES
 from python.classes.contact import Contact
-from python.functions.network import broadcast_server
-from python.functions.network import broadcast_reciever
+#from python.functions.network import broadcast_server
+#from python.functions.network import broadcast_reciever
 import socket
 from threading import Thread
 import ssl
@@ -85,7 +85,12 @@ class User:
         return jsonDict
 #if command.lower() == 'list':
 #    list_contacts(logon[1], online_contacts)
+def start_network_threads(user: User, online_contacts: set, broadcast_port: int):
+    from python.functions.network import broadcast_server, broadcast_reciever
+    Thread(target=broadcast_server, args=(User.email(), broadcast_port), daemon=True).start()
+    Thread(target=broadcast_reciever, args=(broadcast_port, online_contacts), daemon=True).start()
+
 online_contacts = set()
 broadcast_port = 9999
-Thread(target=broadcast_server, args=(User.email(), broadcast_port), daemon=True).start()
-Thread(target=broadcast_reciever, args=(broadcast_port, online_contacts), daemon=True).start()
+user = User(some_data, aes_key)
+start_network_threads(user, online_contacts, broadcast_port)
