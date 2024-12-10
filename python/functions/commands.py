@@ -14,8 +14,8 @@ def add(user: User):
     print("  Conact Added.")
 
 def list_contacts(user: User, online_contacts: set):
-    displayed = False
-    for contact in user._user__contacts: #Access private contacts list
+    contacts = user.return_contacts()
+    for contact in contacts: #Access private contacts list
         contact_email = contact.email()
 
         #What we need

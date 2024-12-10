@@ -62,6 +62,8 @@ class User:
     def printcontacts(self): # used for the incomplete list() function, prints contacts.
         for contact in self.__contacts:
             contact.display()
+    def return_contacts(self):
+        return self.__contacts
 
     def add_contact(self, name: str, email: str): # adds a contact.
         self.__contacts.append(Contact(name, email))
