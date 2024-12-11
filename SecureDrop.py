@@ -11,6 +11,8 @@ from python.functions.file_functions import get_file
 from python.functions.registration import register_user
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
+    Network.stopthreads = True
+    print("Exiting.")
     exit()
 signal.signal(signal.SIGINT, stop_code) 
 
@@ -27,11 +29,13 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
 
-    threads = [threading.Thread(target=Network.udp_listen)]
+    threads = [threading.Thread(target=Network.udp_listen, args=[logon[1]])]
+    threads[0].start()
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
             if command.lower() in ['exit']:
+                Network.stopthreads = True
                 SDFile.write_out(logon[1], filedir)
                 exit()
             if command.lower() == 'help':

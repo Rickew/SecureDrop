@@ -19,24 +19,19 @@ def is_online(user: User, email: str):
         udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         udp_socket.settimeout(10)
         print (f"sending: {data}")
-        udp_socket.sendto(data, ('255.255.255.255', 9999))
+        udp_socket.sendto(data.encode(), ('255.255.255.255', 9999))
         data, ret_address = udp_socket.recvfrom(1024)
         print(f"recieved: {data}")
         if data.decode() == 'friend_confirmed':
-            return ret_address
+            return 1, ret_address
     except TimeoutError:
         udp_socket.close()
-        return 0
+        return 0, 0
 
 def udp_listen(user: User):
-    server_ip = '0.0.0.0'  # listen on all interfaces
-    server_port = 9999
-
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.bind((server_ip, server_port))
+    udp_socket.bind(('0.0.0.0', 9999))
     udp_socket.settimeout(5)
-
-    print(f'Server is running on {server_ip}:{server_port}')
 
     while True:
             if stopthreads:

@@ -1,4 +1,5 @@
 from python.classes.user import User
+from python.functions.network import is_online
 
 #all user commands definitions
 def help():
@@ -22,12 +23,9 @@ def list_contacts(user: User):
         # 1. Contact's email exists in the user's contact list
         # 2. Contact has added the user's email
         # 3. Contact is online in the 'online_contacts' set
-        
-        #if(contact_email in online_contacts and any(user.email() == other.email() for other in contact._Contact__contacts)):
-        #        print(f"* {contact.name()} <{contact.email}>")
-        #        displayed = True
-    #if not displayed:
-     #    print("Not FRIENDS!!")
+        if (is_online(user, contact_email)[0] == 1):
+            print(" GOTEM BITCH")
+
 
     #print("  list function yet to be done, but here, have some contacts:")
     #user.printcontacts()
