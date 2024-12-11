@@ -101,3 +101,19 @@ def udp_listen(user: User):
                 None
         except TimeoutError:
             None
+
+
+def create_tls_socket(server_ip, server_port):
+    #Create a plain TCP socket
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.connect((server_ip, server_port))
+
+    #wrap the socket w/ TLS
+    ssl_context = ssl.create_default_context(
+        ssl.Purpose.SERVER_AUTH
+    )
+
+    ssl_context.load_cert_chain(certfile="", keyfile="insert jane/john here")
+    ssl_context.load_verify_locations(cafile="insert ca_crt")
+    ssl_context.check_hostname = False
+    return ssl_context.wrap_socket(tcp_socket, server_hostname=None)

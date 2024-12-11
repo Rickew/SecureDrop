@@ -48,4 +48,3 @@ def register_user():
             print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
             file.close()
             exit()
-            
