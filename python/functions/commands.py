@@ -16,20 +16,12 @@ def add(user: User):
 
 def list_contacts(user: User):
     contacts = user.return_contacts()
-    for contact in contacts: #Access private contacts list
+    for contact in contacts:
         contact_email = contact.email()
-
-        #What we need
-        # 1. Contact's email exists in the user's contact list
-        # 2. Contact has added the user's email
-        # 3. Contact is online in the 'online_contacts' set
-        is_online(user, contact, contact_email)
+        if not (contact.isfriend):
+            is_online(user, contact, contact_email)
     for contact in contacts:
         contact.display()
-
-    #print("  list function yet to be done, but here, have some contacts:")
-    #user.printcontacts()
-
 
 def send():
     print("  send function yet to be done")

@@ -9,6 +9,7 @@ from python.functions.login import login
 import python.functions.file_functions as SDFile
 from python.functions.file_functions import get_file
 from python.functions.registration import register_user
+from time import sleep
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     Network.stopthreads = True
@@ -29,8 +30,13 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
 
-    threads = [threading.Thread(target=Network.udp_listen, args=[logon[1]])]
-    threads[0].start()
+    thread1 = threading.Thread(target=Network.udp_listen, args=[logon[1]])
+    thread1.start()
+    # sleep(2)
+    Network.broadcast_online(logon[1])
+    # contacts = logon[1].return_contacts()
+    # for contact in contacts:
+    #     print(f"{contact.name()}: {contact.isfriend}")
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
