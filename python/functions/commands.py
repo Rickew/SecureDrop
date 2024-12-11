@@ -23,9 +23,9 @@ def list_contacts(user: User):
         # 1. Contact's email exists in the user's contact list
         # 2. Contact has added the user's email
         # 3. Contact is online in the 'online_contacts' set
-        if (is_online(user, contact_email)[0] == 1):
-            print(" GOTEM BITCH")
-
+        is_online(user, contact, contact_email)
+    for contact in contacts:
+        contact.display()
 
     #print("  list function yet to be done, but here, have some contacts:")
     #user.printcontacts()
