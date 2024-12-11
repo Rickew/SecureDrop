@@ -27,7 +27,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
 
-    threads = [threading.Thread(Network.udp_receiver)]
+    threads = [threading.Thread(target=Network.udp_listen)]
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
