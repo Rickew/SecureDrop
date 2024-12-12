@@ -2,6 +2,7 @@ from python.classes.contact import Contact
 from python.classes.user import User
 import ssl
 import socket
+import paramiko
 from threading import Thread
 from time import sleep
 from Crypto.Hash import SHA256
@@ -96,4 +97,116 @@ def udp_listen(user: User):
                 None
         except TimeoutError:
             None
+
+def tls_listener(user: User):
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.bind(('0.0.0.0', 9999))
+    tcp_socket.listen(1)
+    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context.load_cert_chain(certfile="server.crt", keyfile="server.key")
+    ssl_context.load_verify_locations(cafile="ca.crt")  # CA certificate
+    ssl_context.verify_mode = ssl.CERT_REQUIRED
+    while True:
+        if stopthreads:
+            tcp_socket.close()
+            exit()
+        try:
+            client_socket, client_address = tcp_socket.accept()
+            print(f"Incoming connection from {client_address}")
+            # Wrap the accepted socket with TLS
+            tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
+            tls_socket.timeout(5)
+            # Start a thread to handle the client
+            try:
+                data = tls_socket.recv(1024)
+                data = data.decode('utf-8').split('_')
+                if data[0] == "verify":
+                    message = f"confirming"
+                    tls_socket.send(message.encode(), client_address)
+                    tls_socket.close()
+            except TimeoutError:
+                tls_socket.close()
+        except TimeoutError:
+            None
+
+def verify_addr(contact: Contact):
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile="ca.crt")
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.settimeout(10)
+    tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
+    try:
+        tls_socket.connect((contact.retradd, 9999))
+        tls_socket.send(data)
+        data = tls_socket.recv(1024)
+        print(f"Received from server: {data}")
+    except TimeoutError or ConnectionRefusedError:
+        None
+    tls_socket.close()
+    return
+
+def sftp_sender(username, port, local_path, remote_path):
+
+    try:
+        #Creates an SSH client
+        ssh_client = paramiko.SSHClient()
+        #Sets a policy to automatically add the host key if it's not known
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #Connects to the SFTP server
+        ssh_client.connect(hostname, port, username, password)
+
+        #Opens an SFTP session
+        sftp = ssh_client.open_sftp()
+        #upload the local file to the remote path
+        sftp.put(local_path, remote_path)
+        #closes the sftp and ssh connection
+        sftp.close()
+        print("File sent succcessfully!")
+
+    except Exception as e:
+        print(f"Error sending file: {e}")
+    
+    finally:
+        ssh_client.close()
+    
+def recieve_file(hostname, port, username, password, remote_path, local_path):
+
+    try:
+        #Creates an SSH Client
+        ssh_client = paramiko.SSHClient()
+        #Sets a policy to automatically add the host key if it's not known
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #Connects to the sftp server
+        ssh_client.connect(hostname, port, username, password)
+
+        #opens an SFTP session
+        sftp = ssh_client.open_sftp()
+
+        #Used to download a file from a remote server to the local machine
+        sftp.get(remote_path, local_path)
+        #close the sftp and ssh connection
+        sftp.close()
+        print("File recieve successfully!")
+
+    except Exception as e:
+        print(f"Error receiving file: {e}")
+
+    finally:
+        ssh_client.close()
+
+if __name__ == "__main__":
+    hostname = "your_sftp_server"
+    port = 22
+    username = "your_username"
+    password = "your_username"
+
+    local_file = "local_file.txt"
+    remote_file = "/remote/path/remote_file.txt"
+
+#Calling functions
+    # Send a file
+    #send_file(hostname, port, username, password, local_file, remote_file)
+
+    # Receive a file
+    #receive_file(hostname, port, username, password, remote_file, local_file)
+        
 
