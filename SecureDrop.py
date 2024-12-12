@@ -25,16 +25,14 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     if logon == (0, None):
         register_user()
 
+    thread1 = threading.Thread(target=Network.udp_listen, args=[logon[1]])
+    thread2 = threading.Thread(target=Network.tls_listener, args=[logon[1]])
+    thread1.start()
+    thread2.start()
+    
     # hit them with the motd
     print(f"Welcome to SecureDrop.")     
     print("Type \"help\" For Commands.\n\n")
-
-    thread1 = threading.Thread(target=Network.udp_listen, args=[logon[1]])
-    thread1.start()
-    # sleep(2)
-    # contacts = logon[1].return_contacts()
-    # for contact in contacts:
-    #     print(f"{contact.name()}: {contact.isfriend}")
 
     while logon[0]: # and then start the while loop                                                
             command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
