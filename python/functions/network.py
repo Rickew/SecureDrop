@@ -2,6 +2,7 @@ from python.classes.contact import Contact
 from python.classes.user import User
 import ssl
 import socket
+import paramiko
 from threading import Thread
 from time import sleep
 from Crypto.Hash import SHA256
@@ -114,7 +115,7 @@ def create_tls_socket(server_ip, server_port):
     ssl_context = ssl.create_default_context(
         ssl.Purpose.SERVER_AUTH
     )
-    
+
     ssl_context.load_cert_chain(certfile="", keyfile="insert jane/john here")
     ssl_context.load_verify_locations(cafile="insert ca_crt")
     ssl_context.check_hostname = False
@@ -182,3 +183,73 @@ def start_client_handler_thread(server_ip: str, server_port: int, user: User):
         except Exception as e:
             print(f"Error accepting connection: {e}")
     tcp_socket.close()
+
+
+
+
+def sftp_sender(username, port, local_path, remote_path):
+
+    try:
+        #Creates an SSH client
+        ssh_client = paramiko.SSHClient()
+        #Sets a policy to automatically add the host key if it's not known
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #Connects to the SFTP server
+        ssh_client.connect(hostname, port, username, password)
+
+        #Opens an SFTP session
+        sftp = ssh_client.open_sftp()
+        #upload the local file to the remote path
+        sftp.put(local_path, remote_path)
+        #closes the sftp and ssh connection
+        sftp.close()
+        print("File sent succcessfully!")
+
+    except Exception as e:
+        print(f"Error sending file: {e}")
+    
+    finally:
+        ssh_client.close()
+    
+def recieve_file(hostname, port, username, password, remote_path, local_path):
+
+    try:
+        #Creates an SSH Client
+        ssh_client = paramiko.SSHClient()
+        #Sets a policy to automatically add the host key if it's not known
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #Connects to the sftp server
+        ssh_client.connect(hostname, port, username, password)
+
+        #opens an SFTP session
+        sftp = ssh_client.open_sftp()
+
+        #Used to download a file from a remote server to the local machine
+        sftp.get(remote_path, local_path)
+        #close the sftp and ssh connection
+        sftp.close()
+        print("File recieve successfully!")
+
+    except Exception as e:
+        print(f"Error receiving file: {e}")
+
+    finally:
+        ssh_client.close()
+
+if __name__ == "__main__":
+    hostname = "your_sftp_server"
+    port = 22
+    username = "your_username"
+    password = "your_username"
+
+    local_file = "local_file.txt"
+    remote_file = "/remote/path/remote_file.txt"
+
+#Calling functions
+    # Send a file
+    #send_file(hostname, port, username, password, local_file, remote_file)
+
+    # Receive a file
+    #receive_file(hostname, port, username, password, remote_file, local_file)
+        
+

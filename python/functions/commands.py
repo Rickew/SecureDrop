@@ -1,5 +1,6 @@
 from python.classes.user import User
 from python.functions.network import is_online
+from python.functions.network import sftp_sender
 
 #all user commands definitions
 def help():
@@ -23,5 +24,5 @@ def list_contacts(user: User):
     for contact in contacts:
         contact.display()
 
-def send():
-    print("  send function yet to be done")
+def send(user: User):
+    sftp_sender(input(" "), 22,input(" "), )
