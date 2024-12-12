@@ -1,10 +1,6 @@
 from python.classes.user import User
-<<<<<<< HEAD
 import python.functions.network as Network
-=======
-from python.functions.network import is_online
 from python.functions.network import sftp_sender
->>>>>>> 9d20157e4d532d463c66b208124502e85683e44d
 
 #all user commands definitions
 def help():
@@ -27,8 +23,4 @@ def list_contacts(user: User):
         contact.display()
 
 def send(user: User):
-<<<<<<< HEAD
-    print("  send function yet to be done")
-=======
     sftp_sender(input(" "), 22,input(" "), )
->>>>>>> 9d20157e4d532d463c66b208124502e85683e44d
