@@ -4,6 +4,7 @@ class Contact:
         self.__email = email
         self.isfriend = False
         self.retradd = None
+        self.verified = None
 
     def name(self):
         return self.__name
@@ -13,5 +14,5 @@ class Contact:
     
     def display(self): # displays the contact information
         if (self.isfriend):
-            print(f'  {self.name()} <{self.email()}>')
+            print(f'  * {self.name()} <{self.email()}>')
         

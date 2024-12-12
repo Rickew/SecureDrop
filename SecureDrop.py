@@ -13,7 +13,6 @@ from time import sleep
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     Network.stopthreads = True
-    print("Exiting.")
     exit()
 signal.signal(signal.SIGINT, stop_code) 
 
@@ -33,7 +32,6 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     thread1 = threading.Thread(target=Network.udp_listen, args=[logon[1]])
     thread1.start()
     # sleep(2)
-    Network.broadcast_online(logon[1])
     # contacts = logon[1].return_contacts()
     # for contact in contacts:
     #     print(f"{contact.name()}: {contact.isfriend}")
@@ -52,5 +50,5 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
             if command.lower() == 'list':
                 CMD.list_contacts(logon[1])
             if command.lower() == 'send':
-                CMD.send()
+                CMD.send(logon[1])
 

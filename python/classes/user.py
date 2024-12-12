@@ -18,6 +18,8 @@ def decrypt(key: str, input: str, tag: str, nonce:str):
 class User:
     def __init__(self, data: dict[str, str], aes_key): # constructor used for user importation
         try:
+            ## tempcode
+            self.privkey = None
             self.__aes_key = aes_key
             # setting normal vars
             n_end = int(len(data) - 3 / 2) # gets the correct number of contacts in the data

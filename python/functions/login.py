@@ -54,6 +54,15 @@ def login():
         if (SHA256.new((tempemail+e[1]).encode()).hexdigest() == e[0]
         and SHA256.new((temppass+p[1]).encode()).hexdigest() == p[0]):
             user = User(clientdata, SHA256.new((temppass).encode()).hexdigest())
+        # tempcode purely for codedemo in the presentation, because making logic and methods of making ans signing keys is not one of the objectives, and I was told I didn't have to do it.
+            keyfile = tempemail.split('.')[0]
+            keyfile += ".key"
+            path = get_file().rstrip('usersfile.json')
+            path += keyfile
+            user.privkey = path
+
+
+
             return True, user # if correct let them in, returns a bool that can change for any security reason, and the user profile.
         else: 
             print("Email and Password Combination Invalid.\n") # if wrong tell them to try again

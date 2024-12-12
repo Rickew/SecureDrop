@@ -1,5 +1,5 @@
 from python.classes.user import User
-from python.functions.network import is_online
+import python.functions.network as Network
 
 #all user commands definitions
 def help():
@@ -16,12 +16,10 @@ def add(user: User):
 
 def list_contacts(user: User):
     contacts = user.return_contacts()
-    for contact in contacts:
-        contact_email = contact.email()
-        if not (contact.isfriend):
-            is_online(user, contact, contact_email)
+    Network.broadcast_online(user)
+    print("  The following contacts are online:")
     for contact in contacts:
         contact.display()
 
-def send():
+def send(user: User):
     print("  send function yet to be done")
