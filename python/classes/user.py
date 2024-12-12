@@ -19,7 +19,9 @@ class User:
     def __init__(self, data: dict[str, str], aes_key): # constructor used for user importation
         try:
             ## tempcode
-            self.privkey = None
+            self.keys = None
+            self.cacrt = None
+            self.keypass = None
             self.__aes_key = aes_key
             # setting normal vars
             n_end = int(len(data) - 3 / 2) # gets the correct number of contacts in the data

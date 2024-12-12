@@ -56,10 +56,10 @@ def login():
             user = User(clientdata, SHA256.new((temppass).encode()).hexdigest())
         # tempcode purely for codedemo in the presentation, because making logic and methods of making ans signing keys is not one of the objectives, and I was told I didn't have to do it.
             keyfile = tempemail.split('.')[0]
-            keyfile += ".key"
             path = get_file().rstrip('usersfile.json')
-            path += keyfile
-            user.privkey = path
+            user.cacrt = path + "ca.crt"
+            user.keys = path + keyfile
+            user.keypass = temppass
 
 
 
