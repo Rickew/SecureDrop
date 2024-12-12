@@ -1,13 +1,10 @@
-from python.classes.contact import Contact
-from python.classes.user import User
-import os
 import ssl
 import socket
 import paramiko
-from threading import Thread
-from time import sleep
-from Crypto.Hash import SHA256
 import threading
+from Crypto.Hash import SHA256
+from python.classes.user import User
+from python.classes.contact import Contact
 
 global stopthreads
 stopthreads = False
@@ -104,9 +101,7 @@ def tls_listener(user: User):
     tcp_socket.bind(('0.0.0.0', 9999))
     tcp_socket.listen(1)
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-
     ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
-    os.remove(f"{user.keys}temp.key")
     ssl_context.load_verify_locations(cafile=user.cacrt)  # CA certificate
     ssl_context.verify_mode = ssl.CERT_REQUIRED
     while True:
