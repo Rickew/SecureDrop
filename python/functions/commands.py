@@ -1,7 +1,6 @@
 from python.classes.user import User
 import python.functions.network as Network
-from python.functions.network import sftp_sender
-import threading
+from python.functions.network import sftp_sender, verify_addr
 
 #all user commands definitions
 def help():
@@ -22,9 +21,28 @@ def list_contacts(user: User):
     print("  The following contacts are online:")
     for contact in contacts:
         contact.display()
-    for contact in contacts:
-        if(contact.isfriend):
-            threading.Thread(target=Network.verify_addr,args=[contact, user.cacrt]).start()
 
 def send(user: User):
-    sftp_sender(input(" "), 22,input(" "), )
+    username = input("Enter who you want to send to: ")
+    local_path = input("Enter the local path of your file: ")
+
+    #Verify recipient address and retrieve preferred remote path
+    contact = next((c for c in user.return_contacts() if c.name() == username), None)
+    if not contact:
+        print(f"Contact '{username}' not found in your list.")
+        return
+    
+    try:
+        print(f"Verifying addrss of {username}...")
+        verify_addr(contact)
+
+        print("Requesting preferred remote path from recipient...")
+
+        remote_path = input("Enter the recipient's remote path: ")
+        
+        print(f"Sending file to {username}...")
+        sftp_sender(contact.retradd[0], 22, local_path, remote_path)
+        print(f"File sent successfully to {username}.")
+    except Exception as e:
+        print(f"Error during file transfer: {e}")
+        
