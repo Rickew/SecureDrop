@@ -1,6 +1,7 @@
 from python.classes.user import User
 import python.functions.network as Network
 from python.functions.network import sftp_sender, verify_addr
+import threading
 
 #all user commands definitions
 def help():
@@ -21,6 +22,9 @@ def list_contacts(user: User):
     print("  The following contacts are online:")
     for contact in contacts:
         contact.display()
+    for contact in contacts:
+    if(contact.isfriend):
+        threading.Thread(target=Network.verify_addr,args=[contact, user.cacrt]).start()
 
 def send(user: User):
     username = input("Enter who you want to send to: ")
