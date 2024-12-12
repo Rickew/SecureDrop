@@ -23,8 +23,8 @@ def list_contacts(user: User):
     for contact in contacts:
         contact.display()
     for contact in contacts:
-    if(contact.isfriend):
-        threading.Thread(target=Network.verify_addr,args=[contact, user.cacrt]).start()
+        if (contact.isfriend):
+            threading.Thread(target=Network.verify_addr,args=[contact, user.cacrt]).start()
 
 def send(user: User):
     username = input("Enter who you want to send to: ")
