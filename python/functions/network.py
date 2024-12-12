@@ -103,8 +103,10 @@ def udp_listen(user: User):
             None
 
 
+#TLS SERVER
 def create_tls_socket(server_ip, server_port):
     #Create a plain TCP socket
+
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.connect((server_ip, server_port))
 
@@ -112,8 +114,71 @@ def create_tls_socket(server_ip, server_port):
     ssl_context = ssl.create_default_context(
         ssl.Purpose.SERVER_AUTH
     )
-
+    
     ssl_context.load_cert_chain(certfile="", keyfile="insert jane/john here")
     ssl_context.load_verify_locations(cafile="insert ca_crt")
     ssl_context.check_hostname = False
     return ssl_context.wrap_socket(tcp_socket, server_hostname=None)
+
+##TLS LISTNER
+def create_tcp_socket(server_ip, server_port):
+    # Create a TCP socket and bind to the IP and port
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.bind((server_ip, server_port))
+    tcp_socket.listen(10)  # Listen for up to 10 connections
+    return tcp_socket
+
+def load_ssl_context():
+    # Load the SSL/TLS context with server credentials
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile="server.crt", keyfile="server.key")
+    context.load_verify_locations(cafile="ca.crt")  # CA certificate
+    context.verify_mode = ssl.CERT_REQUIRED  # Enforce mutual TLS (require client certs)
+    return context
+
+def handle_client(tls_socket, user: User):
+    try:
+        data = tls_socket.recv(1024)
+        data = data.decode('utf-8').split('_')
+        
+        if data[0] == "true":
+            contacts = user.return_contacts()
+            for contact in contacts:
+                hashemail = SHA256.new((contact.email()+data[2]).encode())
+                if hashemail.hexdigest() == data[1]:
+                    print(f"Friend verified: {contact.email()}")
+                    contact.isfriend = 1
+
+                    tls_socket.send(b"friend_confirmed")
+                    break
+
+                else:
+                    print("Sender not recognized as a friend.")
+                    tls_socket.send(b"friend_not_recognized")
+            else:
+                print(f"Received unverified data: {data}")
+                tls_socket.send(b"unverified_data")
+    except Exception as e:
+        print(f"Error handling client: {e}")
+    finally:
+        tls_socket.close()    
+
+
+def start_client_handler_thread(server_ip: str, server_port: int, user: User):
+    tcp_socket = create_tcp_socket(server_ip, server_port)
+    ssl_context = load_ssl_context()
+
+    print(f"TLS listener started on {server_ip}:{server_port}")
+    while not stopthreads:
+        try:
+            client_socket, client_address = tcp_socket.accept()
+            print(f"Incoming connection from {client_address}")
+
+            # Wrap the accepted socket with TLS
+            tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
+
+            # Start a thread to handle the client
+            threading.Thread(target=handle_client, args=(tls_socket, user)).start()
+        except Exception as e:
+            print(f"Error accepting connection: {e}")
+    tcp_socket.close()
