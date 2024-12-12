@@ -29,7 +29,7 @@ def broadcast_online(user: User):
         while True:
             try:
                 data, ret_add = udp_socket.recvfrom(1024)
-                threading.Thread(target=broadcast_handler, args=[user,data,ret_add]).start()
+                threading.Thread(target=broadcast_handler, args=[user,data,ret_add[0]]).start()
             except TimeoutError:
                 udp_socket.close()
                 return
@@ -47,7 +47,7 @@ def broadcast_handler(user: User, data: bytes, ret_add):
 
 def is_online(contact: Contact):
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.timeout(3)
+    tcp_socket.settimeout(3)
     try:
         tcp_socket.connect((contact.retradd, 9999))
     except TimeoutError:
@@ -69,6 +69,8 @@ def udp_listen(user: User):
             exit()
         try:
             data, client_address = udp_rec_sock.recvfrom(1024)
+            print("udp address:")
+            print(client_address)
             try:
                 data = data.decode().split('_')
                 if data[0] == "confirm.friend":
@@ -99,7 +101,9 @@ def udp_listen(user: User):
 def tls_listener(user: User):
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.bind(('0.0.0.0', 9999))
+    print("tcp socket running")
     tcp_socket.listen(1)
+    tcp_socket.settimeout(2)
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
     ssl_context.load_verify_locations(cafile=user.cacrt)  # CA certificate
@@ -113,7 +117,7 @@ def tls_listener(user: User):
             print(f"Incoming connection from {client_address}")
             # Wrap the accepted socket with TLS
             tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
-            tls_socket.timeout(5)
+            tls_socket.settimeout(5)
             # Start a thread to handle the client
             try:
                 data = tls_socket.recv(1024)
@@ -126,19 +130,21 @@ def tls_listener(user: User):
                 tls_socket.close()
         except TimeoutError:
             None
+    return
 
-def verify_addr(contact: Contact):
-    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile="ca.crt")
+def verify_addr(contact: Contact, cacrt):
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.settimeout(10)
     tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     try:
+        print(f"attmpting verification to {contact.retradd}:9999")
         tls_socket.connect((contact.retradd, 9999))
-        tls_socket.send(data)
+        tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
         print(f"Received from server: {data}")
     except TimeoutError or ConnectionRefusedError:
-        None
+        print("no good")
     tls_socket.close()
     return
 
