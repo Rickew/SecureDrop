@@ -136,6 +136,7 @@ def verify_addr(contact: Contact, cacrt):
     ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.settimeout(10)
+    print(f"hostname: {contact.name()}")
     tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     try:
         print(f"attmpting verification to {contact.retradd}:9999")
