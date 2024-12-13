@@ -73,17 +73,17 @@ def udp_listen(user: User):
             print(client_address)
             try:
                 data = data.decode().split('_')
-                if data[0] == "confirm.friend":
-                    emailhash = user.email()
-                    hashdata = SHA256.new((data[1]+emailhash[1]).encode())
-                    if (emailhash[0] == hashdata.hexdigest()):
-                        contacts = user.return_contacts()
-                        for contact in contacts:
-                            conemail = contact.email()
-                            hashedemail = SHA256.new((conemail+data[3]).encode())
-                            if (data[2] == hashedemail.hexdigest()):
-                                udp_rec_sock.sendto(b'friend_confirmed', client_address)
-                elif data[0] == "online":
+                # if data[0] == "confirm.friend":
+                #     emailhash = user.email()
+                #     hashdata = SHA256.new((data[1]+emailhash[1]).encode())
+                #     if (emailhash[0] == hashdata.hexdigest()):
+                #         contacts = user.return_contacts()
+                #         for contact in contacts:
+                #             conemail = contact.email()
+                #             hashedemail = SHA256.new((conemail+data[3]).encode())
+                #             if (data[2] == hashedemail.hexdigest()):
+                #                 udp_rec_sock.sendto(b'friend_confirmed', client_address)
+                if data[0] == "online":
                     contacts = user.return_contacts()
                     for contact in contacts:
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
@@ -149,7 +149,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
             print("no good")
             return
     except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
-        print("no good")
+        contact.verified = False
     tls_socket.close()
     contact.verified = True
     return

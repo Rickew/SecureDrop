@@ -4,7 +4,7 @@ class Contact:
         self.__email = email
         self.isfriend = False
         self.retradd = None
-        self.verified = None
+        self.verified = False
 
     def name(self):
         return self.__name
