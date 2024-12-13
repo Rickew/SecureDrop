@@ -29,7 +29,6 @@ def broadcast_online(user: User):
         while True:
             try:
                 data, ret_add = udp_socket.recvfrom(1024)
-                print(f"recieved back: {data}, starting handler")
                 threading.Thread(target=broadcast_handler, args=[user,data,ret_add[0]]).start()
             except TimeoutError:
                 udp_socket.close()
@@ -42,7 +41,6 @@ def broadcast_handler(user: User, data: bytes, ret_add):
         for contact in contacts:
             hashemail = SHA256.new((contact.email()+data[2]).encode())
             if hashemail.hexdigest() == data[1]:
-                print("Contact marked as online.")
                 contact.isfriend = 1
                 contact.retradd = ret_add
                 break
@@ -71,7 +69,6 @@ def udp_listen(user: User):
             exit()
         try:
             data, client_address = udp_rec_sock.recvfrom(1024)
-            print(f"client address requesting: {client_address}")
             try:
                 data = data.decode().split('_')
                 # if data[0] == "confirm.friend":
@@ -89,7 +86,6 @@ def udp_listen(user: User):
                     for contact in contacts:
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
-                            print("contact requested status, sending online.")
                             resend = f'true_{user.email()[0]}_{user.email()[1]}'
                             udp_rec_sock.sendto(resend.encode(), client_address)
                             break
@@ -101,7 +97,6 @@ def udp_listen(user: User):
 def tls_listener(user: User):
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_socket.bind(('0.0.0.0', 9999))
-    print("tcp socket running")
     tcp_socket.listen(1)
     tcp_socket.settimeout(2)
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -114,7 +109,6 @@ def tls_listener(user: User):
             exit()
         try:
             client_socket, client_address = tcp_socket.accept()
-            print(f"Incoming connection from {client_address}")
             try:
                 # Wrap the accepted socket with TLS
                 tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
@@ -138,15 +132,11 @@ def verify_addr(user: User, contact: Contact, cacrt):
         ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.settimeout(10)
-        print(f"hostname: {contact.name()}")
         tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
-        print(f"attmpting verification to {contact.retradd}:9999")
         tls_socket.connect((contact.retradd, 9999))
         tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
-        print(f"Received from server: {data}")
         if data != b"confirming":
-            print("no good")
             return
     except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
         contact.verified = False
