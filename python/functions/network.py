@@ -115,18 +115,17 @@ def tls_listener(user: User):
         try:
             client_socket, client_address = tcp_socket.accept()
             print(f"Incoming connection from {client_address}")
-            # Wrap the accepted socket with TLS
-            tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
-            tls_socket.settimeout(3)
-            # Start a thread to handle the client
             try:
+                # Wrap the accepted socket with TLS
+                tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
+                tls_socket.settimeout(3)
                 data = tls_socket.recv(1024)
                 data = data.decode('utf-8').split('_')
                 if data[0] == "verify":
                     message = b"confirming"
                     tls_socket.send(message)
                     tls_socket.close()
-            except TimeoutError:
+            except TimeoutError or ssl.SSLError or ssl.SSLCertVerificationError:
                 tls_socket.close()
         except TimeoutError:
             None
@@ -149,7 +148,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
         if data != b"confirming":
             print("no good")
             return
-    except TimeoutError or ConnectionRefusedError or ssl.SSLCertVerificationError:
+    except TimeoutError or ConnectionRefusedError or ssl.SSLCertVerificationError or ssl.SSLError:
         print("no good")
     tls_socket.close()
     contact.verified = True
