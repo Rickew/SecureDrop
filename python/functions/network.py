@@ -149,7 +149,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
         if data != b"confirming":
             print("no good")
             return
-    except TimeoutError or ConnectionRefusedError:
+    except TimeoutError or ConnectionRefusedError or ssl.SSLCertVerificationError:
         print("no good")
     tls_socket.close()
     contact.verified = True
