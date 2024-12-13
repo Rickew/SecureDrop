@@ -69,8 +69,6 @@ def udp_listen(user: User):
             exit()
         try:
             data, client_address = udp_rec_sock.recvfrom(1024)
-            print("udp address:")
-            print(client_address)
             try:
                 data = data.decode().split('_')
                 # if data[0] == "confirm.friend":
@@ -88,6 +86,7 @@ def udp_listen(user: User):
                     for contact in contacts:
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
+                            print("contact requested status, sending online.")
                             resend = f'true_{user.email()[0]}_{user.email()[1]}'
                             udp_rec_sock.sendto(resend.encode(), client_address)
                             break
