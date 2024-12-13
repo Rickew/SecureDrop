@@ -133,14 +133,14 @@ def tls_listener(user: User):
     return
 
 def verify_addr(user: User, contact: Contact, cacrt):
-    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
-    ssl_context.verify_mode = ssl.CERT_REQUIRED
-    ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
-    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.settimeout(10)
-    print(f"hostname: {contact.name()}")
-    tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     try:
+        ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
+        ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
+        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_socket.settimeout(10)
+        print(f"hostname: {contact.name()}")
+        tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
         print(f"attmpting verification to {contact.retradd}:9999")
         tls_socket.connect((contact.retradd, 9999))
         tls_socket.send(b'verify')
