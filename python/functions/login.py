@@ -20,7 +20,7 @@ def password_input(): # just used for password input so it doesn't clutter the r
 
 def password_checker(pass1, pass2):                         # password complexity: 
     special_characters = "!@#$%&?" # <-- special chars      # 8 characters minimum, at least 1 special character,
-    if pass1 == pass2 and len(pass1) >= 8:                  # 1 number, 1 lowercase, 1 uppercase
+    if pass1 == pass2 and len(pass1) >= 8 and len(pass1) <= 24:                  # 1 number, 1 lowercase, 1 uppercase
         if(any(ch.isupper() for ch in pass1) and 
            any(ch.isdigit() for ch in pass1) and    
            any(ch.islower() for ch in pass1)and 
