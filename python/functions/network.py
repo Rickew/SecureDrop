@@ -29,6 +29,7 @@ def broadcast_online(user: User):
         while True:
             try:
                 data, ret_add = udp_socket.recvfrom(1024)
+                print(f"recieved back: {data}, starting handler")
                 threading.Thread(target=broadcast_handler, args=[user,data,ret_add[0]]).start()
             except TimeoutError:
                 udp_socket.close()
@@ -41,6 +42,7 @@ def broadcast_handler(user: User, data: bytes, ret_add):
         for contact in contacts:
             hashemail = SHA256.new((contact.email()+data[2]).encode())
             if hashemail.hexdigest() == data[1]:
+                print("Contact marked as online.")
                 contact.isfriend = 1
                 contact.retradd = ret_add
                 break
