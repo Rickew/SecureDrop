@@ -117,14 +117,14 @@ def tls_listener(user: User):
             print(f"Incoming connection from {client_address}")
             # Wrap the accepted socket with TLS
             tls_socket = ssl_context.wrap_socket(client_socket, server_side=True)
-            tls_socket.settimeout(5)
+            tls_socket.settimeout(3)
             # Start a thread to handle the client
             try:
                 data = tls_socket.recv(1024)
                 data = data.decode('utf-8').split('_')
                 if data[0] == "verify":
-                    message = f"confirming"
-                    tls_socket.send(message.encode(), client_address)
+                    message = b"confirming"
+                    tls_socket.send(message)
                     tls_socket.close()
             except TimeoutError:
                 tls_socket.close()
@@ -146,9 +146,13 @@ def verify_addr(user: User, contact: Contact, cacrt):
         tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
         print(f"Received from server: {data}")
-    except TimeoutError or ConnectionRefusedError:
+        if data != b"confirming":
+            print("no good")
+            return
+    except TimeoutError or ConnectionRefusedError or ssl.SSLCertVerificationError:
         print("no good")
     tls_socket.close()
+    contact.verified = True
     return
 
 def sftp_sender(username, port, local_path, remote_path):

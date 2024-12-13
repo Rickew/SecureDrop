@@ -1,0 +1,32 @@
+[ req ]
+default_bits       = 4096
+default_keyfile    = ca.key
+distinguished_name = req_distinguished_name
+attributes         = req_attributes
+x509_extensions    = v3_ca
+
+[ req_distinguished_name ]
+countryName                 = Country Name (2 letter code)
+countryName_default         = US
+stateOrProvinceName         = State or Province Name (full name)
+stateOrProvinceName_default = Some-State
+localityName                = Locality Name (eg, city)
+organizationName            = Organization Name (eg, company)
+organizationalUnitName      = Organizational Unit Name (eg, section)
+commonName                  = Common Name (eg, your name or your server's hostname)
+commonName_default          = My CA
+emailAddress                = Email Address
+emailAddress_default        = email@domain.com
+
+[ req_attributes ]
+challengePassword          = A challenge password
+challengePassword_min      = 4
+challengePassword_max      = 20
+
+[ v3_ca ]
+# Mark Basic Constraints as critical
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid, issuer:always
+
