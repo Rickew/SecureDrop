@@ -71,6 +71,7 @@ def udp_listen(user: User):
             exit()
         try:
             data, client_address = udp_rec_sock.recvfrom(1024)
+            print(f"client address requesting: {client_address}")
             try:
                 data = data.decode().split('_')
                 # if data[0] == "confirm.friend":
