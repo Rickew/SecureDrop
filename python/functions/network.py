@@ -126,7 +126,7 @@ def tls_listener(user: User):
                     tls_socket.send(message)
                     tls_socket.close()
             except (TimeoutError, ssl.SSLError):
-                tls_socket.close()
+                None
         except TimeoutError:
             None
     return
