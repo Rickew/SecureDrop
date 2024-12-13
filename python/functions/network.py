@@ -125,7 +125,7 @@ def tls_listener(user: User):
                     message = b"confirming"
                     tls_socket.send(message)
                     tls_socket.close()
-            except (TimeoutError, ssl.SSLError, ssl.SSLCertVerificationError):
+            except (TimeoutError, ssl.SSLError):
                 tls_socket.close()
         except TimeoutError:
             None
@@ -148,7 +148,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
         if data != b"confirming":
             print("no good")
             return
-    except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError, ssl.SSLError):
+    except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
         print("no good")
     tls_socket.close()
     contact.verified = True
