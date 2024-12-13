@@ -88,8 +88,6 @@ def udp_listen(user: User):
                     for contact in contacts:
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
-                            contact.isfriend = 1
-                            contact.retradd = client_address
                             resend = f'true_{user.email()[0]}_{user.email()[1]}'
                             udp_rec_sock.sendto(resend.encode(), client_address)
                             break
