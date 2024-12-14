@@ -42,7 +42,7 @@ def send(user: User):
         return
     
     print(f"Contact '{contact.name()} <{contact.email()}>' is sending a file. Accept (y/n)?")
-    approval = input.strip().lower()
+    approval = input().strip().lower()
     if approval != 'y':
         print("File transfer canceled.")
         return
