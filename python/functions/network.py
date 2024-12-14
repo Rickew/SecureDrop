@@ -152,7 +152,7 @@ def sftp_sender(username, local_path, remote_path):
         #Sets a policy to automatically add the host key if it's not known
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         #Connects to the SFTP server
-        ssh_client.connect(hostname, port, username, password)
+        ssh_client.connect(username, 22, local_path, remote_path)
 
         #Opens an SFTP session
         sftp = ssh_client.open_sftp()
@@ -193,12 +193,5 @@ def recieve_file(hostname, port, username, password, remote_path, local_path):
     finally:
         ssh_client.close()
 
-
-#Calling functions
-    # Send a file
-    #send_file(hostname, port, username, password, local_file, remote_file)
-
-    # Receive a file
-    #receive_file(hostname, port, username, password, remote_file, local_file)
         
 
