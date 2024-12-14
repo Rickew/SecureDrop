@@ -144,7 +144,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
     contact.verified = True
     return
 
-def sftp_sender(username, local_path, remote_path):
+def sftp_sender(username, port, local_path, remote_path):
 
     try:
         #Creates an SSH client
@@ -152,7 +152,7 @@ def sftp_sender(username, local_path, remote_path):
         #Sets a policy to automatically add the host key if it's not known
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         #Connects to the SFTP server
-        ssh_client.connect(username, 22, local_path, remote_path)
+        ssh_client.connect(username, port, local_path, remote_path)
 
         #Opens an SFTP session
         sftp = ssh_client.open_sftp()
@@ -168,7 +168,7 @@ def sftp_sender(username, local_path, remote_path):
     finally:
         ssh_client.close()
     
-def recieve_file(hostname, port, username, password, remote_path, local_path):
+def recieve_file(username,port, local_path, remote_path):
 
     try:
         #Creates an SSH Client
@@ -176,7 +176,7 @@ def recieve_file(hostname, port, username, password, remote_path, local_path):
         #Sets a policy to automatically add the host key if it's not known
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         #Connects to the sftp server
-        ssh_client.connect(hostname, port, username, password)
+        ssh_client.connect(username, port, local_path, remote_path)
 
         #opens an SFTP session
         sftp = ssh_client.open_sftp()
