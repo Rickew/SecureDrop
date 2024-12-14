@@ -5,7 +5,7 @@ import hashlib
 from platform import system
 from getpass import getuser
 from python.classes.user import User
-from python.functions.commands import send
+
 
 def get_file() -> str:
     var = getattr(sys, "frozen", False), system()
