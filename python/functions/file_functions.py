@@ -1,9 +1,11 @@
 import os
 import sys
 import json
+import hashlib
 from platform import system
 from getpass import getuser
 from python.classes.user import User
+from python.functions.commands import send
 
 def get_file() -> str:
     var = getattr(sys, "frozen", False), system()
@@ -28,3 +30,12 @@ def write_out(user: User, filedir):     # used to write out the json when exitin
     with open(filedir, "w") as file:    # triggered on the commands: exit, add. so the file stays fine and doesn't corrupt
         exp = user.export_user()
         json.dump(exp, file, indent = 4) # nice format to look at.
+
+
+def calculate_checksum(file_path):
+    hash_sha256 = hashlib.sha256()
+    with open(file_path, 'rb') as file:
+        for chunk in iter(lambda: file.read(4096), b""):
+            hash_sha256.update(chunk)
+    return hash_sha256.hexdigest()
+

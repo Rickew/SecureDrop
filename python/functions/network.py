@@ -144,7 +144,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
     contact.verified = True
     return
 
-def sftp_sender(username, port, local_path, remote_path):
+def sftp_sender(username, local_path, remote_path):
 
     try:
         #Creates an SSH client
@@ -193,14 +193,6 @@ def recieve_file(hostname, port, username, password, remote_path, local_path):
     finally:
         ssh_client.close()
 
-if __name__ == "__main__":
-    hostname = "your_sftp_server"
-    port = 22
-    username = "your_username"
-    password = "your_username"
-
-    local_file = "local_file.txt"
-    remote_file = "/remote/path/remote_file.txt"
 
 #Calling functions
     # Send a file
