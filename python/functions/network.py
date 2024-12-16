@@ -6,13 +6,14 @@ from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
 
-class FileTransferError(Exception):
+class FileTransferError(BaseException):
     def __init__(self):
         self.message = "File was not successfully transfered without error, please try again."
         pass
     def __str__(self):
         return self.message
-class FileTransferTimeout(Exception):
+    
+class FileTransferTimeout(BaseException):
     def __init__(self):
         self.message = "Cannot send file, contact could not be verified as legitemate, or is not online."
         pass
