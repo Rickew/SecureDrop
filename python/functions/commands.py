@@ -22,8 +22,9 @@ def list_contacts(user: User):
     Network.broadcast_online(user)
     print("  The following contacts are online:")
     for contact in contacts:
-        print("  * ", end="")
-        contact.display()
+        if contact.isfriend:
+            print("  * ", end="")
+            contact.display()
     for contact in contacts:
         if(contact.isfriend):
             threading.Thread(target=Network.verify_addr,args=[user, contact]).start()
