@@ -167,6 +167,7 @@ def tls_listener(user: User):
                                 while waitforcommand:
                                     None
                                 print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="", flush=True)
+                                print(command)
                                 if command.lower()[0] == 'y':
                                     print("starting file transfer",flush=True)
                                     message = b"send-file"
@@ -178,6 +179,7 @@ def tls_listener(user: User):
                                     print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="", flush=True)
                                 while waitforcommand:
                                     None
+                                print(command)
                                 if command.lower()[0] == 'y':
                                     print("starting file transfer")
                                     message = b"send-file"
