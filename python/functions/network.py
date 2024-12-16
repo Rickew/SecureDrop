@@ -119,6 +119,19 @@ def tls_listener(user: User):
                     message = b"confirming"
                     tls_socket.send(message)
                     tls_socket.close()
+                if data[0] == "file-send":
+                    contacts = user.return_contacts()
+                    for contact in contacts:
+                        hashemail = SHA256.new((contact.email()+data[2]).encode())
+                        if hashemail.hexdigest() == data[1]:
+                            if contact.verified:
+                                ans = input(f"Contact {contact.name} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                if ans.lower()[0] == 'y':
+                                    message = b"send-file"
+                                    tls_socket.send(message)
+                            else:
+                                verify_addr(user, contact, user.cacrt)
+                            break
             except (TimeoutError, ssl.SSLError):
                 None
         except TimeoutError:
@@ -137,61 +150,23 @@ def verify_addr(user: User, contact: Contact, cacrt):
         tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
         if data != b"confirming":
-            return
+            return False
     except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
         contact.verified = False
     tls_socket.close()
     contact.verified = True
-    return
+    return True
 
-def sftp_sender(username, port, local_path, remote_path):
-
-    try:
-        #Creates an SSH client
-        ssh_client = paramiko.SSHClient()
-        #Sets a policy to automatically add the host key if it's not known
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        #Connects to the SFTP server
-        ssh_client.connect(username, port, local_path, remote_path)
-
-        #Opens an SFTP session
-        sftp = ssh_client.open_sftp()
-        #upload the local file to the remote path
-        sftp.put(local_path, remote_path)
-        #closes the sftp and ssh connection
-        sftp.close()
-        print("File sent succcessfully!")
-
-    except Exception as e:
-        print(f"Error sending file: {e}")
-    
-    finally:
-        ssh_client.close()
-    
-def recieve_file(username,port, local_path, remote_path):
-
-    try:
-        #Creates an SSH Client
-        ssh_client = paramiko.SSHClient()
-        #Sets a policy to automatically add the host key if it's not known
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        #Connects to the sftp server
-        ssh_client.connect(username, port, local_path, remote_path)
-
-        #opens an SFTP session
-        sftp = ssh_client.open_sftp()
-
-        #Used to download a file from a remote server to the local machine
-        sftp.get(remote_path, local_path)
-        #close the sftp and ssh connection
-        sftp.close()
-        print("File recieve successfully!")
-
-    except Exception as e:
-        print(f"Error receiving file: {e}")
-
-    finally:
-        ssh_client.close()
+def file_sender(user: User, contact: Contact, cacrt):
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
+    ssl_context.verify_mode = ssl.CERT_REQUIRED
+    ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.settimeout(10)
+    tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
+    tls_socket.connect((contact.retradd, 9999))
+    data = f'file-send_{user.email()[0]}_{user.email()[1]}'.encode()
+    tls_socket.send(data)
 
         
 

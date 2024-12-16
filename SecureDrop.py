@@ -7,7 +7,7 @@ import python.functions.network as Network
 import python.functions.commands as CMD
 from python.functions.login import login
 import python.functions.file_functions as SDFile
-from python.functions.file_functions import get_file
+from python.functions.file_functions import get_userfile
 from python.functions.registration import register_user
 from time import sleep
 
@@ -17,7 +17,7 @@ def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. 
 signal.signal(signal.SIGINT, stop_code) 
 
 # main code
-filedir = get_file()
+filedir = get_userfile()
 if (not os.path.exists(filedir) or os.path.getsize(filedir) == 0): # if client file doesn't exist, ask to register, then register if they want to, else exit
     register_user()                                                # also checking if file has data, if it is empty prompt for a registration.
 elif (os.path.exists(filedir)): # If client file exists, prompt for client login
@@ -47,6 +47,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
                 SDFile.write_out(logon[1], filedir)
             if command.lower() == 'list':
                 CMD.list_contacts(logon[1])
-            if command.lower() == 'send':
-                CMD.send(logon[1])
-
+            if len(command.lower()) > 4:
+                data = command.split(" ")
+                if data[0] == "send":
+                    CMD.send(logon[1], data)

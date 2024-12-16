@@ -4,7 +4,7 @@ import os
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from python.functions.login import password_input
-from python.functions.file_functions import get_file
+from python.functions.file_functions import get_userfile
 
 def register_user():
     while True:
@@ -36,14 +36,14 @@ def register_user():
 
     # Write to the json file, located in the same directory as the program.
     try:
-        with open(get_file(), "w") as file:
+        with open(get_userfile(), "w") as file:
             json.dump(clientdata,file, indent=4)
             print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
             file.close()
             exit()
     except FileNotFoundError:
         os.mkdir("scdusers")
-        with open(get_file(), "w") as file:
+        with open(get_userfile(), "w") as file:
             json.dump(clientdata,file, indent=4)
             print("\nPasswords Match.\nUser Registered.\nExiting SecureDrop.")
             file.close()

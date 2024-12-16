@@ -3,6 +3,8 @@ import python.functions.network as Network
 from python.functions.file_functions import calculate_checksum
 from python.functions.network import sftp_sender, verify_addr
 import threading
+import python.functions.file_functions as scdfile
+import os
 
 #all user commands definitions
 def help():
@@ -22,12 +24,42 @@ def list_contacts(user: User):
     Network.broadcast_online(user)
     print("  The following contacts are online:")
     for contact in contacts:
+        print("  * ")
         contact.display()
     for contact in contacts:
         if(contact.isfriend):
-            threading.Thread(target=Network.verify_addr,args=[contact, user.cacrt]).start()
+            threading.Thread(target=Network.verify_addr,args=[user, contact, user.cacrt]).start()
 
-def send(user: User):
+def send(user: User, data: list[str]):
+    email = data[1]
+    file = data[2]
+    file = scdfile.get_userfile().strip("usersfile.json") + data[2]
+    if not os.path.exists(file):
+        print("File does not exist")
+        return
+    contacts = user.return_contacts()
+    for contact in contacts:
+        if email == contact.email():
+            if contact.isfriend:
+                if Network.is_online(contact) and Network.verify_addr(user, contact, user.cacrt):
+                    result = Network.file_sender(user, contact, user.cacrt)
+                else:
+                    print("Cannot send file, contact could not be verified as legitemate, or is not online.")
+                    return
+            else:
+                Network.broadcast_online(user)
+                if contact.isfriend and contact.verified:
+                    result = print("sent") #send function
+                else:
+                    print("Cannot send file, contact could not be verified as legitemate, or is not online.")
+                    return
+    if not result:
+        print("Contact not listed")
+    return
+                    
+
+
+
     username = input("Enter the person's name or email: ").strip()
     local_path = input("Enter the local path to the file you want to send: ").strip()
 

@@ -7,7 +7,7 @@ from getpass import getuser
 from python.classes.user import User
 
 
-def get_file() -> str:
+def get_userfile() -> str:
     var = getattr(sys, "frozen", False), system()
     if var[0]:
         if var[1] == "Linux":
@@ -24,6 +24,44 @@ def get_file() -> str:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
         filedir += "scdusers\\usersfile.json" # windows path
+    return filedir
+
+def get_upload() -> str:
+    var = getattr(sys, "frozen", False), system()
+    if var[0]:
+        if var[1] == "Linux":
+            u = getuser()
+            filedir = f"/home/{u}/.scdusers/upload/" # linux path if it is installed
+        else:
+            filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
+            filedir += "\\scdusers\\upload\\" # windows path
+    elif (var[1] == "Linux"):
+        filedir = os.path.dirname(__file__) # gets the directory of the program
+        filedir = filedir.replace("python/functions","")
+        filedir += "scdusers/upload/" # linux path
+    else:
+        filedir = os.path.dirname(__file__) # gets the directory of the program
+        filedir = filedir.replace("python\\functions","")
+        filedir += "scdusers\\upload\\" # windows path
+    return filedir
+
+def get_upload() -> str:
+    var = getattr(sys, "frozen", False), system()
+    if var[0]:
+        if var[1] == "Linux":
+            u = getuser()
+            filedir = f"/home/{u}/.scdusers/download/" # linux path if it is installed
+        else:
+            filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
+            filedir += "\\scdusers\\download\\" # windows path
+    elif (var[1] == "Linux"):
+        filedir = os.path.dirname(__file__) # gets the directory of the program
+        filedir = filedir.replace("python/functions","")
+        filedir += "scdusers/download/" # linux path
+    else:
+        filedir = os.path.dirname(__file__) # gets the directory of the program
+        filedir = filedir.replace("python\\functions","")
+        filedir += "scdusers\\download\\" # windows path
     return filedir
 
 def write_out(user: User, filedir):     # used to write out the json when exiting the program normally.

@@ -3,7 +3,7 @@ from sys import exit
 from getpass import getpass
 from Crypto.Hash import SHA256
 from python.classes.user import User
-from python.functions.file_functions import get_file
+from python.functions.file_functions import get_userfile
 
 
 
@@ -30,7 +30,7 @@ def password_checker(pass1, pass2):                         # password complexit
 
 def login():
     try:
-        userfile = open(get_file(), "r")
+        userfile = open(get_userfile(), "r")
         clientdata: dict[str, str] = json.load(userfile)
     except json.decoder.JSONDecodeError:
         print("ALERT: USERS FILE HAS BEEN TAMPERED WITH! Exiting Immediately!")
@@ -56,7 +56,7 @@ def login():
             user = User(clientdata, SHA256.new((temppass).encode()).hexdigest())
         # tempcode purely for codedemo in the presentation, because making logic and methods of making ans signing keys is not one of the objectives, and I was told I didn't have to do it.
             keyfile = tempemail.split('.')[0]
-            path = get_file().rstrip('usersfile.json')
+            path = get_userfile().rstrip('usersfile.json')
             user.cacrt = path + "ca.crt"
             user.keys = path + keyfile
             user.keypass = temppass

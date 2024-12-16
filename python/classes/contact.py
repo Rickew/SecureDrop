@@ -14,5 +14,5 @@ class Contact:
     
     def display(self): # displays the contact information
         if (self.isfriend):
-            print(f'  * {self.name()} <{self.email()}>')
+            print(f'{self.name()} <{self.email()}>')
         
