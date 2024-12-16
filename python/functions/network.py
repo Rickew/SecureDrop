@@ -6,7 +6,7 @@ from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
 global command
-command:str = None
+command = ""
 class FileTransferError(BaseException):
     def __init__(self):
         self.message = "File was not successfully transfered without error, please try again."
