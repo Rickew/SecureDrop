@@ -1,0 +1,17 @@
+Patrick - 50%
+- Wrote most of the code
+- Some of the Security Overview
+- Helped on concepts and enviroment testing
+
+Ryan - 30%
+- Some code
+- Helped alot on concepts and enviroment testing
+- Some of the Security Overview
+
+alex - 10%
+- Some code
+- Helped with concepts
+
+anthony - 10%
+- Some code
+- Most of Security Overview
