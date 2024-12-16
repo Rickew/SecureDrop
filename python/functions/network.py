@@ -158,7 +158,7 @@ def tls_listener(user: User):
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
                             if contact.verified:
-                                command = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
@@ -166,7 +166,7 @@ def tls_listener(user: User):
                             else:
                                 contact.retradd = client_address[0]
                                 if verify_addr(user, contact):
-                                    command = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                    print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
