@@ -164,7 +164,12 @@ def tls_listener(user: User):
                                     FileRec = True
                             else:
                                 contact.retradd = client_address[0]
-                                verify_addr(user, contact)
+                                if verify_addr(user, contact):
+                                    ans = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                if ans.lower()[0] == 'y':
+                                    message = b"send-file"
+                                    tls_socket.send(message)
+                                    FileRec = True
                             break
             except (TimeoutError, ssl.SSLError):
                 None
