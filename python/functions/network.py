@@ -131,10 +131,13 @@ def tls_listener(user: User):
                 filepath = get_download() + "tempfilename"
                 with open(filepath, "w") as file:
                     while FileRec:
+                        print(f"recieved: {data}")
                         data = tls_socket.recv(1024).decode()
                         rechash = data.split('_')[0]
                         data = data.lstrip(rechash)
                         calchash = SHA256.new(data.encode()).hexdigest()
+                        print(f"calchash: {calchash}")
+                        print(f"rechash: {rechash}")
                         if (rechash != calchash):
                             tls_socket.send(b"hash-error")
                         file.write(data)
@@ -163,7 +166,7 @@ def tls_listener(user: User):
                             if contact.verified:
                                 while waitforcommand:
                                     None
-                                print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="")
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
@@ -171,7 +174,7 @@ def tls_listener(user: User):
                             else:
                                 contact.retradd = client_address[0]
                                 if verify_addr(user, contact):
-                                    print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                    print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="")
                                 while waitforcommand:
                                     None
                                 if command.lower()[0] == 'y':
@@ -191,7 +194,6 @@ def get_clientContext(user: User):
     return ssl_context
 
 def verify_addr(user: User, contact: Contact):
-    print("verify_addr:")
     try:
         ssl_context = get_clientContext(user)
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -200,7 +202,6 @@ def verify_addr(user: User, contact: Contact):
         tls_socket.connect((contact.retradd, 9999))
         tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
-        print(data)
         if data != b"confirming":
             return False
     except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
@@ -212,7 +213,7 @@ def verify_addr(user: User, contact: Contact):
 def file_sender(user: User, contact: Contact, filepath):
     ssl_context = get_clientContext(user)
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.settimeout(10)
+    tcp_socket.settimeout(20)
     tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     tls_socket.connect((contact.retradd, 9999))
     data = f'file-send_{user.email()[0]}_{user.email()[1]}'.encode()
@@ -231,8 +232,10 @@ def file_sender(user: User, contact: Contact, filepath):
                         break
                     hash = SHA256.new(filedata.encode()).hexdigest()
                     data = f"{hash, filedata}".encode()
+                    print(f"sending: {data}")
                     tls_socket.send(data)
                     data = tls_socket.recv(1024)
+                    print(f"recieved back: {data.decode()}")
                     if data.decode() == "ack":
                         continue
                     elif(data.decode() == "hash-error"):
