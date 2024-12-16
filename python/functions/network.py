@@ -5,7 +5,7 @@ from Crypto.Hash import SHA256
 from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
-from SecureDrop import command
+global command
 
 class FileTransferError(BaseException):
     def __init__(self):

@@ -10,7 +10,6 @@ import python.functions.file_functions as SDFile
 from python.functions.file_functions import get_userfile
 from python.functions.registration import register_user
 from time import sleep
-global command
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     Network.stopthreads = True
@@ -36,19 +35,19 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
     print("Type \"help\" For Commands.\n\n")
 
     while logon[0]: # and then start the while loop                                                
-            command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
-            if command.lower() in ['exit']:
+            Network.command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
+            if Network.command.lower() in ['exit']:
                 Network.stopthreads = True
                 SDFile.write_out(logon[1], filedir)
                 exit()
-            if command.lower() == 'help':
+            if Network.command.lower() == 'help':
                 CMD.help()
-            if command.lower() == 'add':
+            if Network.command.lower() == 'add':
                 CMD.add(logon[1])
                 SDFile.write_out(logon[1], filedir)
-            if command.lower() == 'list':
+            if Network.command.lower() == 'list':
                 CMD.list_contacts(logon[1])
-            if len(command.lower()) > 4:
-                data = command.split(" ")
+            if len(Network.command.lower()) > 4:
+                data = Network.command.split(" ")
                 if data[0] == "send":
                     CMD.send(logon[1], data)
