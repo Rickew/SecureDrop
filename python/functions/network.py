@@ -131,13 +131,13 @@ def tls_listener(user: User):
                 filepath = get_download() + "tempfilename"
                 with open(filepath, "w") as file:
                     while FileRec:
-                        print(f"recieved: {data}")
+                        print(f"recieved: {data}", flush=True)
                         data = tls_socket.recv(1024).decode()
                         rechash = data.split('_')[0]
                         data = data.lstrip(rechash)
                         calchash = SHA256.new(data.encode()).hexdigest()
-                        print(f"calchash: {calchash}")
-                        print(f"rechash: {rechash}")
+                        print(f"calchash: {calchash}", flush=True)
+                        print(f"rechash: {rechash}", flush=True)
                         if (rechash != calchash):
                             tls_socket.send(b"hash-error")
                         file.write(data)
@@ -168,7 +168,7 @@ def tls_listener(user: User):
                                     None
                                 print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="", flush=True)
                                 if command.lower()[0] == 'y':
-                                    print("starting file transfer")
+                                    print("starting file transfer",flush=True)
                                     message = b"send-file"
                                     tls_socket.send(message)
                                     FileRec = True
