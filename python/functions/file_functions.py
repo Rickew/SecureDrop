@@ -34,15 +34,15 @@ def get_upload() -> str:
             filedir = f"/home/{u}/.scdusers/uploads/" # linux path if it is installed
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
-            filedir += "\\scdusers\\uploads\\" # windows path
+            filedir += "\\uploads\\" # windows path
     elif (var[1] == "Linux"):
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python/functions","")
-        filedir += "scdusers/uploads/" # linux path
+        filedir += "uploads/" # linux path
     else:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
-        filedir += "scdusers\\uploads\\" # windows path
+        filedir += "uploads\\" # windows path
     return filedir
 
 def get_download() -> str:
@@ -53,15 +53,15 @@ def get_download() -> str:
             filedir = f"/home/{u}/.scdusers/downloads/" # linux path if it is installed
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
-            filedir += "\\scdusers\\downloads\\" # windows path
+            filedir += "\\downloads\\" # windows path
     elif (var[1] == "Linux"):
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python/functions","")
-        filedir += "scdusers/downloads/" # linux path
+        filedir += "downloads/" # linux path
     else:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
-        filedir += "scdusers\\downloads\\" # windows path
+        filedir += "downloads\\" # windows path
     return filedir
 
 def write_out(user: User, filedir):     # used to write out the json when exiting the program normally.

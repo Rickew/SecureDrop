@@ -26,7 +26,7 @@ def list_contacts(user: User):
         contact.display()
     for contact in contacts:
         if(contact.isfriend):
-            threading.Thread(target=Network.verify_addr,args=[user, contact, user.cacrt]).start()
+            threading.Thread(target=Network.verify_addr,args=[user, contact]).start()
 
 def send(user: User, data: list[str]):
     try:
@@ -36,14 +36,11 @@ def send(user: User, data: list[str]):
     email = data[1]
     file = scdfile.get_userfile().strip("usersfile.json") + data[2]
     file2 = scdfile.get_upload() + data[2]
-    print(file)
-    print(file2)
     fileisgood = False, None
     if os.path.exists(file):
         fileisgood = True, file
     elif os.path.exists(file2):
         fileisgood = True, file2
-    print(fileisgood[1])
     if not (fileisgood[0]):
         print("File could not be found")
         return
@@ -53,8 +50,8 @@ def send(user: User, data: list[str]):
         if email == contact.email():
             contactfound = True
             if contact.isfriend:
-                if Network.is_online(contact) and Network.verify_addr(user, contact, user.cacrt):
-                    try: 
+                if Network.is_online(contact) and Network.verify_addr(user, contact):
+                    try:
                         Network.file_sender(user, contact, fileisgood[1])
                     except Network.FileTransferError:
                         print("File was not successfully transfered without error, please try again.")
@@ -63,13 +60,16 @@ def send(user: User, data: list[str]):
                     print("Cannot send file, contact could not be verified as legitemate, or is not online.")
                     return
             else:
-                Network.broadcast_online(user)
-                if contact.isfriend and contact.verified:
-                    try: 
-                        Network.file_sender(user, contact, fileisgood[1])
-                    except Network.FileTransferError:
-                        print("File was not successfully transfered without error, please try again.")
-                        return
+                print("broadcasting online")
+                Network.broadcast_online(user, True)
+                print(f"{contact.isfriend} {contact.verified}")
+                if contact.isfriend:
+                    if Network.verify_addr(user, contact):
+                        try: 
+                            Network.file_sender(user, contact, fileisgood[1])
+                        except [Network.FileTransferError , Network.FileTransferTimeout] as e:
+                            print(e)
+                            return
                 else:
                     print("Cannot send file, contact could not be verified as legitemate, or is not online.")
                     return

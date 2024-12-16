@@ -6,11 +6,18 @@ from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
 
-class FileTransferError:
+class FileTransferError(Exception):
     def __init__(self):
-        self.message = "A hash was not matched"
+        self.message = "File was not successfully transfered without error, please try again."
+        pass
     def __str__(self):
-        return f"FileTransferError: {self.message}"
+        return self.message
+class FileTransferTimeout(Exception):
+    def __init__(self):
+        self.message = "Cannot send file, contact could not be verified as legitemate, or is not online."
+        pass
+    def __str__(self):
+        return self.message
 
 global stopthreads
 stopthreads = False
@@ -24,7 +31,7 @@ def test_UDP_port(port):
     except:
         return port-1, port
 
-def broadcast_online(user: User):
+def broadcast_online(user: User, clause = False):
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         data = f'online_{user.email()[0]}_{user.email()[1]}'
 
@@ -122,7 +129,7 @@ def tls_listener(user: User):
                     while FileRec:
                         data = tls_socket.recv(1024).decode()
                         rechash = data.split('_')[0]
-                        data = data.lstrip(hash)
+                        data = data.lstrip(rechash)
                         calchash = SHA256.new(data.encode()).hexdigest()
                         if (rechash != calchash):
                             tls_socket.send(b"hash-error")
@@ -149,7 +156,7 @@ def tls_listener(user: User):
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
                             if contact.verified:
-                                ans = input(f"Contact {contact.name} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                ans = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
                                 if ans.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
@@ -168,7 +175,8 @@ def get_clientContext(user: User):
     ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
     return ssl_context
 
-def verify_addr(user: User, contact: Contact, cacrt):
+def verify_addr(user: User, contact: Contact):
+    print("verify_addr:")
     try:
         ssl_context = get_clientContext(user)
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -177,6 +185,7 @@ def verify_addr(user: User, contact: Contact, cacrt):
         tls_socket.connect((contact.retradd, 9999))
         tls_socket.send(b'verify')
         data = tls_socket.recv(1024)
+        print(data)
         if data != b"confirming":
             return False
     except (TimeoutError, ConnectionRefusedError, ssl.SSLCertVerificationError):
@@ -188,36 +197,35 @@ def verify_addr(user: User, contact: Contact, cacrt):
 def file_sender(user: User, contact: Contact, filepath):
     ssl_context = get_clientContext(user)
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.settimeout(5)
+    tcp_socket.settimeout(10)
     tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     tls_socket.connect((contact.retradd, 9999))
     data = f'file-send_{user.email()[0]}_{user.email()[1]}'.encode()
     tls_socket.send(data)
-    data, ret_add = tls_socket.recvfrom(1024)
-    if (data.decode() != "send-file"):
-        return
     try:
-        with open(filepath, "r") as file:
-            while True:
-                filedata = file.read(200)
-                if not filedata:
-                    tls_socket.close()
-                    print("File Transfer Successful")
-                    break
-                hash = SHA256.new(filedata.encode()).hexdigest()
-                data = f"{hash, filedata}".encode()
-                tls_socket.send(data)
-                data = tls_socket.recv(1024)
-                if data.decode() == "ack":
-                    continue
-                elif(data.decord() == "hash-error"):
-                    tls_socket.close()
-                    raise FileTransferError
+        data = tls_socket.recv(1024)
+        if (data.decode() != "send-file"):
+            return
+        try:
+            with open(filepath, "r") as file:
+                while True:
+                    filedata = file.read(200)
+                    if not filedata:
+                        tls_socket.close()
+                        print("File Transfer Successful")
+                        break
+                    hash = SHA256.new(filedata.encode()).hexdigest()
+                    data = f"{hash, filedata}".encode()
+                    tls_socket.send(data)
+                    data = tls_socket.recv(1024)
+                    if data.decode() == "ack":
+                        continue
+                    elif(data.decode() == "hash-error"):
+                        tls_socket.close()
+                        raise FileTransferError
 
-    except TypeError:
-        tls_socket.close()
-        return
-
-
-        
-
+        except TypeError:
+            tls_socket.close()
+            return
+    except TimeoutError:
+        raise FileTransferTimeout
