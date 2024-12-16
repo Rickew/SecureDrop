@@ -166,7 +166,7 @@ def tls_listener(user: User):
                             if contact.verified:
                                 while waitforcommand:
                                     None
-                                print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="")
+                                print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="", flush=True)
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
@@ -174,7 +174,7 @@ def tls_listener(user: User):
                             else:
                                 contact.retradd = client_address[0]
                                 if verify_addr(user, contact):
-                                    print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="")
+                                    print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ", end="", flush=True)
                                 while waitforcommand:
                                     None
                                 if command.lower()[0] == 'y':
