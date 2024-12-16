@@ -26,7 +26,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
         register_user()
 
     thread1 = threading.Thread(target=Network.udp_listen, args=[logon[1]])
-    thread2 = threading.Thread(target=Network.tls_listener, args=[logon[1]])
+    thread2 = threading.Thread(target=Network.tls_listener, args=[logon[1]], daemon=True)
     thread1.start()
     thread2.start()
     
