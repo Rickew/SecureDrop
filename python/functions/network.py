@@ -155,6 +155,7 @@ def tls_listener(user: User):
                     tls_socket.send(message)
                     tls_socket.close()
                 if data[0] == "file-send":
+                    waitforcommand = True
                     contacts = user.return_contacts()
                     for contact in contacts:
                         hashemail = SHA256.new((contact.email()+data[2]).encode())

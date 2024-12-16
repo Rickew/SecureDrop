@@ -36,6 +36,7 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
 
     while logon[0]: # and then start the while loop                                                
             Network.command = input('secure_drop> ') # Wait for user input, check it against known command, execute command given
+            Network.waitforcommand = False
             if Network.command.lower() in ['exit']:
                 Network.stopthreads = True
                 SDFile.write_out(logon[1], filedir)
@@ -50,5 +51,4 @@ elif (os.path.exists(filedir)): # If client file exists, prompt for client login
             if len(Network.command.lower()) > 4:
                 data = Network.command.split(" ")
                 if data[0] == "send":
-                    Network.waitforcommand = True
                     CMD.send(logon[1], data)
