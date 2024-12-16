@@ -6,6 +6,8 @@ from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
 global command
+global waitforcommand
+waitforcommand = False
 command = ""
 class FileTransferError(BaseException):
     def __init__(self):
@@ -158,6 +160,8 @@ def tls_listener(user: User):
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
                             if contact.verified:
+                                while waitforcommand:
+                                    None
                                 print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
@@ -167,6 +171,8 @@ def tls_listener(user: User):
                                 contact.retradd = client_address[0]
                                 if verify_addr(user, contact):
                                     print(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                while waitforcommand:
+                                    None
                                 if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
