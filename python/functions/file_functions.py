@@ -31,49 +31,41 @@ def get_upload() -> str:
     if var[0]:
         if var[1] == "Linux":
             u = getuser()
-            filedir = f"/home/{u}/.scdusers/upload/" # linux path if it is installed
+            filedir = f"/home/{u}/.scdusers/uploads/" # linux path if it is installed
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
-            filedir += "\\scdusers\\upload\\" # windows path
+            filedir += "\\scdusers\\uploads\\" # windows path
     elif (var[1] == "Linux"):
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python/functions","")
-        filedir += "scdusers/upload/" # linux path
+        filedir += "scdusers/uploads/" # linux path
     else:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
-        filedir += "scdusers\\upload\\" # windows path
+        filedir += "scdusers\\uploads\\" # windows path
     return filedir
 
-def get_upload() -> str:
+def get_download() -> str:
     var = getattr(sys, "frozen", False), system()
     if var[0]:
         if var[1] == "Linux":
             u = getuser()
-            filedir = f"/home/{u}/.scdusers/download/" # linux path if it is installed
+            filedir = f"/home/{u}/.scdusers/downloads/" # linux path if it is installed
         else:
             filedir = os.path.dirname(sys.executable) # gets the directory of the program, if the program if an exectutable
-            filedir += "\\scdusers\\download\\" # windows path
+            filedir += "\\scdusers\\downloads\\" # windows path
     elif (var[1] == "Linux"):
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python/functions","")
-        filedir += "scdusers/download/" # linux path
+        filedir += "scdusers/downloads/" # linux path
     else:
         filedir = os.path.dirname(__file__) # gets the directory of the program
         filedir = filedir.replace("python\\functions","")
-        filedir += "scdusers\\download\\" # windows path
+        filedir += "scdusers\\downloads\\" # windows path
     return filedir
 
 def write_out(user: User, filedir):     # used to write out the json when exiting the program normally.
     with open(filedir, "w") as file:    # triggered on the commands: exit, add. so the file stays fine and doesn't corrupt
         exp = user.export_user()
         json.dump(exp, file, indent = 4) # nice format to look at.
-
-
-def calculate_checksum(file_path):
-    hash_sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as file:
-        for chunk in iter(lambda: file.read(4096), b""):
-            hash_sha256.update(chunk)
-    return hash_sha256.hexdigest()
 

@@ -1,10 +1,16 @@
 import ssl
 import socket
-import paramiko
 import threading
 from Crypto.Hash import SHA256
 from python.classes.user import User
 from python.classes.contact import Contact
+from python.functions.file_functions import get_download
+
+class FileTransferError:
+    def __init__(self):
+        self.message = "A hash was not matched"
+    def __str__(self):
+        return f"FileTransferError: {self.message}"
 
 global stopthreads
 stopthreads = False
@@ -103,10 +109,28 @@ def tls_listener(user: User):
     ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
     ssl_context.load_verify_locations(cafile=user.cacrt)  # CA certificate
     ssl_context.verify_mode = ssl.CERT_REQUIRED
+    FileRec = False
     while True:
         if stopthreads:
             tcp_socket.close()
             exit()
+        try:
+            if FileRec:
+                tls_socket.settimeout(10)
+                filepath = get_download() + "tempfilename"
+                with open(filepath, "w") as file:
+                    while FileRec:
+                        data = tls_socket.recv(1024).decode()
+                        rechash = data.split('_')[0]
+                        data = data.lstrip(hash)
+                        calchash = SHA256.new(data.encode()).hexdigest()
+                        if (rechash != calchash):
+                            tls_socket.send(b"hash-error")
+                        file.write(data)
+                        tls_socket.send(b"ack")
+        except TimeoutError:
+            FileRec = False
+            tls_socket.close()
         try:
             client_socket, client_address = tcp_socket.accept()
             try:
@@ -129,6 +153,7 @@ def tls_listener(user: User):
                                 if ans.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
+                                    FileRec = True
                             else:
                                 verify_addr(user, contact, user.cacrt)
                             break
@@ -136,13 +161,16 @@ def tls_listener(user: User):
                 None
         except TimeoutError:
             None
-    return
+
+def get_clientContext(user: User):
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=user.cacrt)
+    ssl_context.verify_mode = ssl.CERT_REQUIRED
+    ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
+    return ssl_context
 
 def verify_addr(user: User, contact: Contact, cacrt):
     try:
-        ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
-        ssl_context.verify_mode = ssl.CERT_REQUIRED
-        ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
+        ssl_context = get_clientContext(user)
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.settimeout(10)
         tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
@@ -157,16 +185,39 @@ def verify_addr(user: User, contact: Contact, cacrt):
     contact.verified = True
     return True
 
-def file_sender(user: User, contact: Contact, cacrt):
-    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=cacrt)
-    ssl_context.verify_mode = ssl.CERT_REQUIRED
-    ssl_context.load_cert_chain(certfile=f"{user.keys}.pem", keyfile=f"{user.keys}.key", password=user.keypass)
+def file_sender(user: User, contact: Contact, filepath):
+    ssl_context = get_clientContext(user)
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.settimeout(10)
+    tcp_socket.settimeout(5)
     tls_socket = ssl_context.wrap_socket(tcp_socket, server_hostname=contact.name())
     tls_socket.connect((contact.retradd, 9999))
     data = f'file-send_{user.email()[0]}_{user.email()[1]}'.encode()
     tls_socket.send(data)
+    data, ret_add = tls_socket.recvfrom(1024)
+    if (data.decode() != "send-file"):
+        return
+    try:
+        with open(filepath, "r") as file:
+            while True:
+                filedata = file.read(200)
+                if not filedata:
+                    tls_socket.close()
+                    print("File Transfer Successful")
+                    break
+                hash = SHA256.new(filedata.encode()).hexdigest()
+                data = f"{hash, filedata}".encode()
+                tls_socket.send(data)
+                data = tls_socket.recv(1024)
+                if data.decode() == "ack":
+                    continue
+                elif(data.decord() == "hash-error"):
+                    tls_socket.close()
+                    raise FileTransferError
+
+    except TypeError:
+        tls_socket.close()
+        return
+
 
         
 
