@@ -62,7 +62,6 @@ def send(user: User, data: list[str]):
             else:
                 print("broadcasting online")
                 Network.broadcast_online(user, True)
-                print(f"{contact.isfriend} {contact.verified}")
                 if contact.isfriend:
                     if Network.verify_addr(user, contact):
                         try: 

@@ -163,7 +163,7 @@ def tls_listener(user: User):
                                     tls_socket.send(message)
                                     FileRec = True
                             else:
-                                verify_addr(user, contact, user.cacrt)
+                                verify_addr(user, contact)
                             break
             except (TimeoutError, ssl.SSLError):
                 None
