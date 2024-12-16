@@ -10,6 +10,7 @@ import python.functions.file_functions as SDFile
 from python.functions.file_functions import get_userfile
 from python.functions.registration import register_user
 from time import sleep
+global command
 
 def stop_code(signal, frame): # this is for ctrl c handing so no errors pop up. Possible security issue if they did?
     Network.stopthreads = True

@@ -5,6 +5,7 @@ from Crypto.Hash import SHA256
 from python.classes.user import User
 from python.classes.contact import Contact
 from python.functions.file_functions import get_download
+from SecureDrop import command
 
 class FileTransferError(BaseException):
     def __init__(self):
@@ -157,16 +158,16 @@ def tls_listener(user: User):
                         hashemail = SHA256.new((contact.email()+data[2]).encode())
                         if hashemail.hexdigest() == data[1]:
                             if contact.verified:
-                                ans = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
-                                if ans.lower()[0] == 'y':
+                                command = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
                                     FileRec = True
                             else:
                                 contact.retradd = client_address[0]
                                 if verify_addr(user, contact):
-                                    ans = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
-                                if ans.lower()[0] == 'y':
+                                    command = input(f"Contact {contact.name()} {contact.email()}' is sending a file. Accept (y/n)? ")
+                                if command.lower()[0] == 'y':
                                     message = b"send-file"
                                     tls_socket.send(message)
                                     FileRec = True
